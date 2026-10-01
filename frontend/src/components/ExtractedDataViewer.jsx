@@ -97,7 +97,7 @@ export default function ExtractedDataViewer({ document: doc, onFieldEdit }) {
               <h3 className="text-base font-bold text-slate-900 mt-0.5">
                 {isPolicyClean 
                   ? 'All Corporate Expense Guidelines Satisfied (Alcohol, Per-Diem, Hours)' 
-                  : `${compliance.violations.length} Compliance Exception${compliance.violations.length > 1 ? 's' : ''} Detected`}
+                  : `${(compliance.violations || []).length} Compliance Exception${(compliance.violations || []).length > 1 ? 's' : ''} Detected`}
               </h3>
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function ExtractedDataViewer({ document: doc, onFieldEdit }) {
         {/* Violations List if Flagged */}
         {!isPolicyClean && (
           <div className="mt-4 pt-3 border-t border-amber-200 space-y-2.5">
-            {compliance.violations.map((v, i) => (
+            {(compliance.violations || []).map((v, i) => (
               <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-amber-200 text-xs shadow-xs">
                 <div className="p-1.5 rounded-lg bg-amber-100 text-amber-700 shrink-0 mt-0.5">
                   {v.rule === 'ALCOHOL_RESTRICTION' ? <Ban className="w-4 h-4" /> : 

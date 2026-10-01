@@ -24,6 +24,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import ThreeRobot from '../components/ThreeRobot';
+import { useAuth } from '../context/AuthContext';
 
 const SAMPLES = {
   mismatch: {
@@ -148,6 +149,7 @@ FORGED BILLED TOTAL : ₹3,45,000.00 (Spliced!)
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { loginWithGoogle, loginWithGitHub } = useAuth();
   const [activeSampleKey, setActiveSampleKey] = useState('mismatch');
   const activeSample = SAMPLES[activeSampleKey];
 
@@ -234,6 +236,48 @@ export default function LandingPage() {
                 <Bot className="w-4 h-4 text-blue-600" />
                 <span>Ask AI Bot</span>
               </button>
+            </div>
+
+            {/* Direct Google & GitHub Sign In / Sign Up Shortcuts */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
+              <span className="text-slate-500 font-mono text-[11px] font-semibold">Quick Sign In / Sign Up:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  loginWithGoogle(false);
+                  navigate('/dashboard');
+                }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-xs hover:border-blue-400 cursor-pointer transition-all"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+                  <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.5.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.2c0 2.8.7 5.4 1.9 7.8l3.7-2.9z"/>
+                  <path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.9C3.7 20.6 7.5 23.5 12 23.5z"/>
+                </svg>
+                <span>Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  loginWithGitHub(false);
+                  navigate('/dashboard');
+                }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-xs hover:border-slate-400 cursor-pointer transition-all"
+              >
+                <svg className="w-3.5 h-3.5 fill-current text-slate-900" viewBox="0 0 24 24">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+              </button>
+
+              <Link
+                to="/register"
+                className="text-blue-600 hover:text-blue-700 font-bold underline underline-offset-2 ml-1"
+              >
+                Sign Up Free →
+              </Link>
             </div>
 
             {/* Key Value Props Ticker */}
@@ -572,11 +616,33 @@ export default function LandingPage() {
 
             <button
               type="button"
-              onClick={() => navigate('/dashboard')}
-              className="px-6 py-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-blue-500 hover:text-blue-600 flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                loginWithGoogle(false);
+                navigate('/dashboard');
+              }}
+              className="px-6 py-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-blue-500 hover:text-blue-600 flex items-center gap-2.5 cursor-pointer"
             >
-              <Zap className="w-4 h-4 text-blue-600" />
-              <span>Try 1-Click Judge Presets</span>
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.5.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.2c0 2.8.7 5.4 1.9 7.8l3.7-2.9z"/>
+                <path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.9C3.7 20.6 7.5 23.5 12 23.5z"/>
+              </svg>
+              <span>Sign In with Google</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                loginWithGitHub(false);
+                navigate('/dashboard');
+              }}
+              className="px-6 py-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-slate-500 hover:text-slate-900 flex items-center gap-2.5 cursor-pointer"
+            >
+              <svg className="w-4 h-4 fill-current text-slate-900" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              <span>Sign In with GitHub</span>
             </button>
           </div>
         </div>

@@ -31,17 +31,18 @@ export default function InspectorPage() {
   const navigate = useNavigate();
   const { getDocument, updateDocument } = useDocuments();
 
-  const [doc, setDoc] = useState(null);
-  const [lineItems, setLineItems] = useState([]);
-  const [statedTotal, setStatedTotal] = useState(0);
-  const [vendor, setVendor] = useState('');
-  const [gstin, setGstin] = useState('');
-  const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [invoiceDate, setInvoiceDate] = useState('');
+  const initialDoc = getDocument(id);
+  const [doc, setDoc] = useState(initialDoc);
+  const [lineItems, setLineItems] = useState(initialDoc?.lineItems || []);
+  const [statedTotal, setStatedTotal] = useState(initialDoc?.statedTotal || 0);
+  const [vendor, setVendor] = useState(initialDoc?.vendor || '');
+  const [gstin, setGstin] = useState(initialDoc?.gstin || '');
+  const [invoiceNumber, setInvoiceNumber] = useState(initialDoc?.invoiceNumber || '');
+  const [invoiceDate, setInvoiceDate] = useState(initialDoc?.invoiceDate || '');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
-  // Load document on route mount
+  // Update on route parameter changes
   useEffect(() => {
     const found = getDocument(id);
     if (found) {
@@ -52,8 +53,6 @@ export default function InspectorPage() {
       setGstin(found.gstin || '');
       setInvoiceNumber(found.invoiceNumber || '');
       setInvoiceDate(found.invoiceDate || '');
-    } else {
-      navigate('/dashboard');
     }
   }, [id]);
 
@@ -172,7 +171,24 @@ export default function InspectorPage() {
     showToast('Audit JSON downloaded successfully.');
   };
 
-  if (!doc) return null;
+  if (!doc) {
+    return (
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-6">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 max-w-md w-full text-center shadow-lg space-y-4">
+          <FileText className="w-12 h-12 text-blue-600 mx-auto" />
+          <h2 className="text-xl font-bold text-slate-900">Loading Document...</h2>
+          <p className="text-xs text-slate-500 font-mono">Preparing multimodal OCR ledger and forensic analysis.</p>
+          <button
+            type="button"
+            onClick={() => navigate('/dashboard')}
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 py-6 px-4 sm:px-6 lg:px-8 selection:bg-blue-600 selection:text-white">

@@ -46,6 +46,36 @@ export function AuthProvider({ children }) {
     return guestUser;
   };
 
+  const loginWithGoogle = (isSignUp = false) => {
+    const googleUser = {
+      name: isSignUp ? 'Google Auditor (New User)' : 'Google Auditor',
+      email: 'auditor.google@discrepiq.io',
+      company: 'Enterprise FinTech Global',
+      role: 'Staff AP Financial Auditor',
+      provider: 'google',
+      avatar: 'https://lh3.googleusercontent.com/a/default-user',
+      isGuest: false,
+      signedInAt: new Date().toISOString()
+    };
+    setUser(googleUser);
+    return googleUser;
+  };
+
+  const loginWithGitHub = (isSignUp = false) => {
+    const githubUser = {
+      name: isSignUp ? 'GitHub Auditor (New User)' : 'GitHub Engineer Auditor',
+      email: 'auditor.github@discrepiq.io',
+      company: 'OpenCore Systems India Ltd',
+      role: 'Lead AP Systems Auditor',
+      provider: 'github',
+      avatar: 'https://avatars.githubusercontent.com/u/9919?v=4',
+      isGuest: false,
+      signedInAt: new Date().toISOString()
+    };
+    setUser(githubUser);
+    return githubUser;
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
@@ -61,6 +91,8 @@ export function AuthProvider({ children }) {
       isAuthenticated: !!user, 
       login, 
       loginAsGuest, 
+      loginWithGoogle,
+      loginWithGitHub,
       logout,
       updateUser
     }}>
