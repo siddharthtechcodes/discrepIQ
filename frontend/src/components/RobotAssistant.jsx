@@ -31,7 +31,8 @@ export default function RobotAssistant() {
 
   const isInspector = location.pathname.startsWith('/inspect');
   const isDashboard = location.pathname === '/dashboard';
-  const hasDiscrepancy = stats.discrepancyCount > 0;
+  const discrepancyCount = stats?.discrepancyCount || 0;
+  const hasDiscrepancy = discrepancyCount > 0;
 
   let guideMessage = "Awaiting invoice ingestion. Drop any PDF or select a 1-click test scenario to inspect line-item parity.";
   let status = 'idle';
@@ -41,7 +42,7 @@ export default function RobotAssistant() {
     guideMessage = "Inspecting active document. Any field edits on unit price or quantity trigger instantaneous arithmetic recalculation.";
   } else if (hasDiscrepancy) {
     status = 'discrepancy';
-    guideMessage = `Active Variance Alert: ${stats.discrepancyCount} invoice(s) have math or compliance exceptions. Open the Inspector to verify.`;
+    guideMessage = `Active Variance Alert: ${discrepancyCount} invoice(s) have math or compliance exceptions. Open the Inspector to verify.`;
   } else if (isDashboard) {
     status = 'verified';
     guideMessage = "Auditor Hub Ready. Drag & drop any invoice or click a Judge Preset for live Gemini Vision extraction.";

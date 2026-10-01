@@ -9,15 +9,17 @@ import SupportBotPage from './pages/SupportBotPage';
 import AccountPage from './pages/AccountPage';
 import AuthPage from './pages/AuthPage';
 import RobotAssistant from './components/RobotAssistant';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import { DocumentProvider } from './context/DocumentContext';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <DocumentProvider>
-        <BrowserRouter>
-          <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <ErrorBoundary>
+      <AuthProvider>
+        <DocumentProvider>
+          <BrowserRouter>
+            <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
             
             {/* Global Sticky Executive Navbar */}
             <Navbar />
@@ -45,5 +47,6 @@ export default function App() {
         </BrowserRouter>
       </DocumentProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }

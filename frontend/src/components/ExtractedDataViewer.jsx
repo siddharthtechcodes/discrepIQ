@@ -246,21 +246,21 @@ export default function ExtractedDataViewer({ document: doc, onFieldEdit }) {
               {/* Document Header */}
               <div className="border-b border-slate-200 pb-3 flex justify-between items-center text-slate-600 text-[11px]">
                 <div>
-                  <span className="font-bold text-slate-900">{doc.vendor}</span>
-                  <div className="text-[10px] text-slate-500">{doc.gstin || 'GST REGISTERED VENDOR'}</div>
+                  <span className="font-bold text-slate-900">{doc?.vendor || 'Vendor'}</span>
+                  <div className="text-[10px] text-slate-500">{doc?.gstin || 'GST REGISTERED VENDOR'}</div>
                 </div>
                 <div className="text-right">
-                  <div>{doc.invoiceNumber}</div>
-                  <div className="text-[10px] text-slate-500">{doc.invoiceDate}</div>
+                  <div>{doc?.invoiceNumber || 'INV-000'}</div>
+                  <div className="text-[10px] text-slate-500">{doc?.invoiceDate || ''}</div>
                 </div>
               </div>
 
               {/* Items representation */}
               <div className="py-4 space-y-1.5 text-slate-800 text-[11px]">
-                {doc.lineItems?.map((it, idx) => (
+                {(doc?.lineItems || []).map((it, idx) => (
                   <div key={idx} className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-600">{it.description}</span>
-                    <span className="font-semibold">{curr}{Number(it.total || it.amount || 0).toLocaleString()}</span>
+                    <span className="text-slate-600">{it?.description || 'Line Item'}</span>
+                    <span className="font-semibold">{curr}{Number(it?.total || it?.amount || 0).toLocaleString()}</span>
                   </div>
                 ))}
               </div>

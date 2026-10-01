@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { Bot, Sparkles } from 'lucide-react';
 
 export default function ThreeRobot({ 
   status = 'idle', // 'idle' | 'scanning' | 'discrepancy' | 'verified'
@@ -7,6 +8,7 @@ export default function ThreeRobot({
   size = 'normal' // 'compact' | 'normal' | 'large'
 }) {
   const mountRef = useRef(null);
+  const [webGlSupported, setWebGlSupported] = useState(true);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -15,17 +17,25 @@ export default function ThreeRobot({
     const width = container.clientWidth || 300;
     const height = container.clientHeight || 300;
 
-    // 1. Scene & Camera
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 7.5);
+    let scene, camera, renderer, animId;
 
-    // 2. WebGL Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    container.appendChild(renderer.domElement);
+    try {
+      // 1. Scene & Camera
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 0, 7.5);
+
+      // 2. WebGL Renderer with graceful fallback
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'default' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn('WebGL initialization failed in ThreeRobot, switching to resilient SVG avatar:', err);
+      setWebGlSupported(false);
+      return;
+    }
 
     // 3. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
@@ -172,19 +182,21 @@ export default function ThreeRobot({
     let targetRotationY = 0;
 
     const handleMouseMove = (e) => {
-      if (!interactive) return;
-      const rect = container.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      mouseX = x * 0.6;
-      mouseY = y * 0.4;
+      if (!interactive || !container) return;
+      try {
+        const rect = container.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+        const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        mouseX = x * 0.6;
+        mouseY = y * 0.4;
+      } catch (err) {}
     };
 
     window.addEventListener('mousemove', handleMouseMove);
 
     // 6. Animation Loop
     let clock = new THREE.Clock();
-    let animId;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -222,14 +234,16 @@ export default function ThreeRobot({
       const pulse = 1 + Math.sin(elapsedTime * 4) * 0.08;
       core.scale.set(pulse, pulse, pulse);
 
-      renderer.render(scene, camera);
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
     };
 
     animate();
 
     // 7. Resize Handler
     const handleResize = () => {
-      if (!container) return;
+      if (!container || !renderer || !camera) return;
       const newW = container.clientWidth || 300;
       const newH = container.clientHeight || 300;
       camera.aspect = newW / newH;
@@ -239,19 +253,46 @@ export default function ThreeRobot({
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup
+    // Safe Non-Throwing Cleanup
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
-      if (container && renderer.domElement) {
-        container.removeChild(renderer.domElement);
+      if (renderer && renderer.domElement && renderer.domElement.parentNode) {
+        try {
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        } catch (e) {}
       }
-      renderer.dispose();
+      try {
+        if (renderer) renderer.dispose();
+      } catch (e) {}
     };
   }, [status, interactive]);
 
   const heightClass = size === 'compact' ? 'h-48' : size === 'large' ? 'h-80 sm:h-96' : 'h-64 sm:h-72';
+
+  if (!webGlSupported) {
+    return (
+      <div 
+        className={`w-full ${heightClass} flex flex-col items-center justify-center relative select-none bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl p-4`}
+        title="DiscrepBot AI Assistant"
+      >
+        <div className="relative">
+          <div className="w-20 h-20 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 animate-pulse">
+            <Bot className="w-10 h-10" />
+          </div>
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white animate-ping"></span>
+        </div>
+        <div className="mt-3 text-xs font-mono font-bold text-slate-800 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+          <span>DiscrepBot AI Active</span>
+        </div>
+        <span className="text-[10px] font-mono text-slate-400 mt-0.5 uppercase">
+          Status: {status}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div 

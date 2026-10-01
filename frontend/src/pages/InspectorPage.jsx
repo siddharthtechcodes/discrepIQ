@@ -62,13 +62,14 @@ export default function InspectorPage() {
   };
 
   // Dynamic calculations as user edits fields
-  const calculatedSubtotal = lineItems.reduce((acc, it) => acc + (Number(it.total) || 0), 0);
-  const taxSum = lineItems.reduce((acc, it) => {
-    const rate = Number(it.taxRate) || 18;
-    return acc + ((Number(it.total) || 0) * (rate / 100));
+  const safeItems = Array.isArray(lineItems) ? lineItems : [];
+  const calculatedSubtotal = safeItems.reduce((acc, it) => acc + (Number(it?.total) || 0), 0);
+  const taxSum = safeItems.reduce((acc, it) => {
+    const rate = Number(it?.taxRate) || 18;
+    return acc + ((Number(it?.total) || 0) * (rate / 100));
   }, 0);
   const calculatedTotal = calculatedSubtotal + taxSum;
-  const variance = Math.abs(calculatedTotal - statedTotal);
+  const variance = Math.abs(calculatedTotal - (Number(statedTotal) || 0));
   const isBalanced = variance < 0.05;
 
   const handleItemChange = (index, field, value) => {
@@ -120,8 +121,8 @@ export default function InspectorPage() {
   const handleExportCSV = () => {
     if (!doc) return;
     const headers = 'Item Description,Quantity,Unit Price (INR),Tax Rate %,Line Total (INR)\n';
-    const rows = lineItems.map(it => 
-      `"${it.description.replace(/"/g, '""')}",${it.quantity},${it.unitPrice},${it.taxRate}%,${it.total}`
+    const rows = (lineItems || []).map(it => 
+      `"${String(it?.description || '').replace(/"/g, '""')}",${it?.quantity || 1},${it?.unitPrice || 0},${it?.taxRate || 18}%,${it?.total || 0}`
     ).join('\n');
     const summary = `\n\nSubtotal,,${calculatedSubtotal}\nEstimated GST,,${taxSum.toFixed(2)}\nCalculated Total,,${calculatedTotal.toFixed(2)}\nStated Total,,${statedTotal}\nVariance,,${variance.toFixed(2)}`;
     
@@ -129,7 +130,7 @@ export default function InspectorPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${doc.name.replace(/\.[^/.]+$/, '')}_clean_audit.csv`);
+    link.setAttribute('download', `${String(doc?.name || 'invoice').replace(/\.[^/.]+$/, '')}_clean_audit.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -164,7 +165,7 @@ export default function InspectorPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${doc.name.replace(/\.[^/.]+$/, '')}_audit_manifest.json`);
+    link.setAttribute('download', `${String(doc?.name || 'invoice').replace(/\.[^/.]+$/, '')}_audit_manifest.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -317,13 +318,13 @@ export default function InspectorPage() {
               {/* Scanned Items Mockup */}
               <div className="space-y-2 pt-1 text-[11px]">
                 <div className="text-slate-400 font-bold uppercase text-[10px]">Recognized Line Items:</div>
-                {lineItems.map((item, i) => (
+                {(lineItems || []).map((item, i) => (
                   <div key={i} className="flex justify-between border-b border-slate-200/60 pb-1.5">
                     <span className="text-slate-700 truncate max-w-[200px]">
-                      {item.quantity}x {item.description}
+                      {item?.quantity || 1}x {item?.description || 'Item'}
                     </span>
                     <span className="text-slate-900 font-bold">
-                      ₹{Number(item.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
                 ))}
@@ -467,12 +468,12 @@ export default function InspectorPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-mono">
-                    {lineItems.map((item, idx) => (
-                      <tr key={item.id || idx} className="hover:bg-slate-50">
+                    {(lineItems || []).map((item, idx) => (
+                      <tr key={item?.id || idx} className="hover:bg-slate-50">
                         <td className="px-3.5 py-2.5 font-sans">
                           <input
                             type="text"
-                            value={item.description}
+                            value={item?.description || ''}
                             onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
                             className="w-full bg-transparent border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1.5 py-1"
                           />
@@ -480,7 +481,7 @@ export default function InspectorPage() {
                         <td className="px-2 py-2 text-right">
                           <input
                             type="number"
-                            value={item.quantity}
+                            value={item?.quantity ?? 1}
                             onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
                             className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1 py-1"
                           />
@@ -488,7 +489,7 @@ export default function InspectorPage() {
                         <td className="px-2 py-2 text-right">
                           <input
                             type="number"
-                            value={item.unitPrice}
+                            value={item?.unitPrice ?? 0}
                             onChange={(e) => handleItemChange(idx, 'unitPrice', e.target.value)}
                             className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1 py-1"
                           />
@@ -496,13 +497,13 @@ export default function InspectorPage() {
                         <td className="px-2 py-2 text-right">
                           <input
                             type="number"
-                            value={item.taxRate || 18}
+                            value={item?.taxRate ?? 18}
                             onChange={(e) => handleItemChange(idx, 'taxRate', e.target.value)}
                             className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-700 hover:bg-slate-100 rounded px-1 py-1"
                           />
                         </td>
                         <td className="px-3.5 py-2.5 text-right font-bold text-slate-900">
-                          ₹{Number(item.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                       </tr>
                     ))}

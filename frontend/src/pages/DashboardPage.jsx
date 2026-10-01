@@ -166,11 +166,17 @@ export default function DashboardPage() {
     }
   };
 
-  const filteredDocs = documents.filter((doc) => {
+  const filteredDocs = (documents || []).filter((doc) => {
+    if (!doc) return false;
+    const name = String(doc.name || '');
+    const vendor = String(doc.vendor || '');
+    const invoiceNumber = String(doc.invoiceNumber || '');
+    const q = String(searchQuery || '').toLowerCase();
+    
     const matchesSearch = 
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.vendor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      name.toLowerCase().includes(q) ||
+      vendor.toLowerCase().includes(q) ||
+      invoiceNumber.toLowerCase().includes(q);
     
     if (filterStatus === 'all') return matchesSearch;
     if (filterStatus === 'verified') return matchesSearch && (doc.status === 'verified' || doc.reconciled);
@@ -602,12 +608,12 @@ export default function DashboardPage() {
 
                         {/* Stated Total */}
                         <td className="px-5 py-4 text-right font-mono text-slate-900 font-bold text-sm">
-                          ₹{Number(doc.statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          ₹{Number(doc.statedTotal || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
 
                         {/* Calculated Total */}
                         <td className="px-5 py-4 text-right font-mono text-slate-600 text-xs">
-                          ₹{Number(doc.calculatedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          ₹{Number(doc.calculatedTotal || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
 
                         {/* Status Badge */}
@@ -620,12 +626,12 @@ export default function DashboardPage() {
                           ) : doc.complianceReport?.status === 'FLAGGED' || doc.status === 'flagged_compliance' ? (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
                               <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
-                              <span>Policy Flagged ({doc.complianceReport?.violations?.length || 3})</span>
+                              <span>Policy Flagged ({(doc.complianceReport?.violations || []).length || 3})</span>
                             </span>
                           ) : isMismatch ? (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
                               <AlertTriangle className="w-3.5 h-3.5" />
-                              <span>Variance (+₹{Number(doc.discrepancy).toLocaleString('en-IN')})</span>
+                              <span>Variance (+₹{Number(doc.discrepancy || 0).toLocaleString('en-IN')})</span>
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">

@@ -314,12 +314,19 @@ export function DocumentProvider({ children }) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge any newly introduced INITIAL_DOCS that might be missing from cached storage
-          const existingIds = new Set(parsed.map(d => d.id));
+          // Merge any newly introduced INITIAL_DOCS and sanitize all items
+          const existingIds = new Set(parsed.map(d => d && d.id));
           const missingInitial = INITIAL_DOCS.filter(d => !existingIds.has(d.id));
-          return [...parsed, ...missingInitial];
-        }
+          return [...parsed, ...missingInitial].filter(Boolean).map(d => {
+            const defaultMatch = INITIAL_DOCS.find(init => init.id === d.id) || {};
+            return {
+              ...defaultMatch,
+              ...d,
+              lineItems: Array.isArray(d?.lineItems) ? d.lineItems : (defaultMatch.lineItems || []),
+              complianceReport: d?.complianceReport || defaultMatch.complianceReport || { status: 'COMPLIANT', violations: [] },
+              forensicAnalysis: d?.forensicAnalysis || defaultMatch.forensicAnalysis || { integrityScore: 96, riskLevel: 'LOW', tamperingDetected: false, anomalies: [] }
+            };
+          });
       }
     } catch (e) {
       console.error('Failed to load documents from storage:', e);
@@ -341,49 +348,52 @@ export function DocumentProvider({ children }) {
   };
 
   const getDocument = (id) => {
-    if (!id) return documents[0] || INITIAL_DOCS[0];
+    const list = Array.isArray(documents) && documents.length > 0 ? documents : INITIAL_DOCS;
+    if (!id) return list[0] || INITIAL_DOCS[0];
     
+    const strId = String(id).trim();
+
     // 1. Direct match in active state
-    let found = documents.find(d => d.id === id);
+    let found = list.find(d => d && d.id === strId);
     
     // 2. Direct match in INITIAL_DOCS
     if (!found) {
-      found = INITIAL_DOCS.find(d => d.id === id);
+      found = INITIAL_DOCS.find(d => d && d.id === strId);
     }
     
     // 3. Substring / Alias matching
     if (!found) {
-      const lowerId = id.toLowerCase();
+      const lowerId = strId.toLowerCase();
       if (lowerId.includes('freight')) {
-        found = documents.find(d => d.id.includes('freight')) || INITIAL_DOCS.find(d => d.id.includes('freight'));
+        found = list.find(d => d && String(d.id).includes('freight')) || INITIAL_DOCS.find(d => String(d.id).includes('freight'));
       } else if (lowerId.includes('cloud')) {
-        found = documents.find(d => d.id.includes('cloud')) || INITIAL_DOCS.find(d => d.id.includes('cloud'));
+        found = list.find(d => d && String(d.id).includes('cloud')) || INITIAL_DOCS.find(d => String(d.id).includes('cloud'));
       } else if (lowerId.includes('receipt') || lowerId.includes('coffee')) {
-        found = documents.find(d => d.id.includes('receipt') || d.id.includes('coffee')) || INITIAL_DOCS[0];
+        found = list.find(d => d && (String(d.id).includes('receipt') || String(d.id).includes('coffee'))) || INITIAL_DOCS[0];
       } else if (lowerId.includes('contractor')) {
-        found = documents.find(d => d.id.includes('contractor')) || INITIAL_DOCS[2];
+        found = list.find(d => d && String(d.id).includes('contractor')) || INITIAL_DOCS[2];
       } else if (lowerId.includes('alcohol') || lowerId.includes('oberoi')) {
-        found = documents.find(d => d.id.includes('alcohol')) || INITIAL_DOCS[1];
+        found = list.find(d => d && String(d.id).includes('alcohol')) || INITIAL_DOCS[1];
       } else if (lowerId.includes('tamper') || lowerId.includes('forged')) {
-        found = documents.find(d => d.id.includes('tamper')) || INITIAL_DOCS[3];
+        found = list.find(d => d && String(d.id).includes('tamper')) || INITIAL_DOCS[3];
       }
     }
 
     // 4. Guaranteed non-null fallback to prevent any blank page
-    return found || documents[0] || INITIAL_DOCS[0];
+    return found || list[0] || INITIAL_DOCS[0];
   };
 
   const updateDocument = (id, updates) => {
-    setDocuments(prev => prev.map(doc => {
-      if (doc.id === id) {
+    setDocuments(prev => (prev || []).map(doc => {
+      if (doc && doc.id === id) {
         const updated = { ...doc, ...updates };
         // Recalculate math if line items or stated total were modified
         if (updates.lineItems || updates.statedTotal !== undefined) {
-          const items = updated.lineItems || [];
-          const calculatedSubtotal = items.reduce((acc, item) => acc + (Number(item.total) || 0), 0);
+          const items = Array.isArray(updated.lineItems) ? updated.lineItems : [];
+          const calculatedSubtotal = items.reduce((acc, item) => acc + (Number(item?.total) || 0), 0);
           const taxSum = items.reduce((acc, item) => {
-            const rate = Number(item.taxRate) || 18;
-            return acc + ((Number(item.total) || 0) * (rate / 100));
+            const rate = Number(item?.taxRate) || 18;
+            return acc + ((Number(item?.total) || 0) * (rate / 100));
           }, 0);
           const calculatedTotal = calculatedSubtotal + taxSum;
           const diff = Math.abs(calculatedTotal - (Number(updated.statedTotal) || 0));
@@ -401,14 +411,15 @@ export function DocumentProvider({ children }) {
   };
 
   const deleteDocument = (id) => {
-    setDocuments(prev => prev.filter(d => d.id !== id));
+    setDocuments(prev => (prev || []).filter(d => d && d.id !== id));
   };
 
+  const safeList = Array.isArray(documents) ? documents : INITIAL_DOCS;
   const stats = {
-    totalProcessed: documents.length,
-    verifiedCount: documents.filter(d => d.status === 'verified' || d.reconciled).length,
-    discrepancyCount: documents.filter(d => d.status === 'discrepancy' && !d.reconciled).length,
-    totalVarianceRupees: documents.reduce((sum, d) => sum + (d.discrepancy || 0), 0)
+    totalProcessed: safeList.length,
+    verifiedCount: safeList.filter(d => d && (d.status === 'verified' || d.reconciled)).length,
+    discrepancyCount: safeList.filter(d => d && (d.status === 'discrepancy' && !d.reconciled)).length,
+    totalVarianceRupees: safeList.reduce((sum, d) => sum + (Number(d?.discrepancy) || 0), 0)
   };
 
   return (

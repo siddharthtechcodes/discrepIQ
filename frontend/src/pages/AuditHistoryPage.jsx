@@ -100,11 +100,15 @@ export default function AuditHistoryPage() {
   ];
 
   const filtered = historyRecords.filter(r => {
+    if (!r) return false;
     if (filter === 'exception' && r.status !== 'exception') return false;
     if (filter === 'reconciled' && r.status !== 'reconciled') return false;
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      return r.vendor.toLowerCase().includes(q) || r.docName.toLowerCase().includes(q) || r.id.toLowerCase().includes(q);
+    if (search && search.trim()) {
+      const q = search.trim().toLowerCase();
+      const v = String(r.vendor || '').toLowerCase();
+      const d = String(r.docName || '').toLowerCase();
+      const id = String(r.id || '').toLowerCase();
+      return v.includes(q) || d.includes(q) || id.includes(q);
     }
     return true;
   });
