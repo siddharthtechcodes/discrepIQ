@@ -12,71 +12,72 @@
 
 body {
   margin: 0;
-  background-color: #020617; /* deep obsidian slate-950 */
-  color: #f8fafc; /* slate-50 */
+  background-color: #0b1329; /* Rich Executive Midnight Slate */
+  color: #f8fafc;
   overflow-x: hidden;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.5;
 }
 
-/* Precision tabular numbers for finance */
+/* Tabular numbers for clean financial alignment */
 .font-tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Minimalist Slate Scrollbar */
+/* Custom Human-Crafted Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #0b1329;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b; /* slate-800 */
+  background: #253352;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155; /* slate-700 */
+  background: #3b82f6;
 }
 
-/* Obsidian Enterprise Panels */
-.panel {
-  background-color: #0b1120;
-  border: 1px solid #1e293b;
+/* Professional Cards and Panels */
+.card-executive {
+  background: #111c38;
+  border: 1px solid #1e2e54;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
 }
 
-.panel-subtle {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
+.card-subtle {
+  background: #0f1830;
+  border: 1px solid #1a2747;
 }
 
-/* Subtle background grid pattern for enterprise audit feel */
-.bg-grid-slate {
-  background-size: 32px 32px;
+/* Subtle architectural grid pattern */
+.bg-executive-grid {
+  background-size: 36px 36px;
   background-image: 
-    linear-gradient(to right, rgba(30, 41, 59, 0.4) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 41, 59, 0.4) 1px, transparent 1px);
+    linear-gradient(to right, rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
 }
 
-/* Precision finance input cells */
+/* Precision finance table inputs */
 .input-cell {
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.15s ease;
 }
 
 .input-cell:hover {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: #1e293b;
+  border-color: #334155;
 }
 
 .input-cell:focus {
-  background: #0f172a;
-  border-color: #38bdf8;
+  background: #1e293b;
+  border-color: #3b82f6;
   outline: none;
 }

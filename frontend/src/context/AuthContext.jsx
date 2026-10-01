@@ -12,15 +12,8 @@ export function AuthProvider({ children }) {
     } catch (e) {
       console.error('Failed to restore auth session:', e);
     }
-    // Default guest session for frictionless judging
-    return {
-      name: 'Auditor Siddharth',
-      email: 'siddharth@discrepiq.internal',
-      company: 'Global FinTech Audits India Pvt Ltd',
-      role: 'Lead AP Auditor',
-      avatar: null,
-      isGuest: false
-    };
+    // Return null initially if user wants to see Sign In / Sign Up, or provide default auditor
+    return null;
   });
 
   useEffect(() => {
@@ -41,10 +34,10 @@ export function AuthProvider({ children }) {
 
   const loginAsGuest = () => {
     const guestUser = {
-      name: 'Hackathon Judge / Guest',
-      email: 'judge@fintech-eval.org',
-      company: 'Antigravity Hackathon Review Board',
-      role: 'Principal Evaluator',
+      name: 'Auditor Siddharth',
+      email: 'siddharth@discrepiq.io',
+      company: 'Global Accounts Payable Audits India Ltd',
+      role: 'Chief Financial Auditor',
       avatar: null,
       isGuest: true,
       signedInAt: new Date().toISOString()
@@ -55,10 +48,22 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  const updateUser = (updates) => {
+    setUser(prev => prev ? { ...prev, ...updates } : updates);
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, loginAsGuest, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated: !!user, 
+      login, 
+      loginAsGuest, 
+      logout,
+      updateUser
+    }}>
       {children}
     </AuthContext.Provider>
   );
