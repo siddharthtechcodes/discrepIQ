@@ -657,7 +657,7 @@ app.post('/api/documents/process', (req, res, next) => {
             responseMimeType: "application/json",
           },
         });
-        const response = await model.generateContent([filePart, EXTRACTION_PROMPT]);
+        const response = await model.generateContent([filePart, FORENSIC_EXTRACTION_PROMPT || EXTRACTION_PROMPT]);
         responseText = response.response.text();
         successfulModel = modelName;
         console.log(`✅ Gemini extraction successful with model: ${modelName}`);
