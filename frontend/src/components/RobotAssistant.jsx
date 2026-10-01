@@ -10,7 +10,8 @@ import {
   Sparkles,
   AlertTriangle,
   CheckCircle2,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 import ThreeRobot from './ThreeRobot';
 import { useDocuments } from '../context/DocumentContext';
@@ -20,7 +21,7 @@ export default function RobotAssistant() {
   const location = useLocation();
   const { stats } = useDocuments();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Collapsed by default so it never blocks page buttons!
   const [isExpanded, setIsExpanded] = useState(false);
 
   // If on the dedicated support chat page, hide the duplicate docked assistant
@@ -32,7 +33,7 @@ export default function RobotAssistant() {
   const isDashboard = location.pathname === '/dashboard';
   const hasDiscrepancy = stats.discrepancyCount > 0;
 
-  let guideMessage = "Awaiting invoice ingestion. Drop any PDF or select a verification scenario to begin arithmetic parity checking.";
+  let guideMessage = "Awaiting invoice ingestion. Drop any PDF or select a 1-click test scenario to inspect line-item parity.";
   let status = 'idle';
 
   if (isInspector) {
@@ -40,109 +41,130 @@ export default function RobotAssistant() {
     guideMessage = "Inspecting active document. Any field edits on unit price or quantity trigger instantaneous arithmetic recalculation.";
   } else if (hasDiscrepancy) {
     status = 'discrepancy';
-    guideMessage = `Active Variance Alert: ${stats.discrepancyCount} invoice(s) have math exceptions. Review the Freight Invoice to inspect the ₹6,940 overbilling discrepancy.`;
+    guideMessage = `Active Variance Alert: ${stats.discrepancyCount} invoice(s) have math or compliance exceptions. Open the Inspector to verify.`;
   } else if (isDashboard) {
     status = 'verified';
-    guideMessage = "Auditor Hub Ready. Drag & drop any invoice or photo receipt for Gemini Vision extraction.";
+    guideMessage = "Auditor Hub Ready. Drag & drop any invoice or click a Judge Preset for live Gemini Vision extraction.";
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 max-w-sm w-full select-none transition-all">
-      <div className="bg-[#111c38] border border-[#1e2e54] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md">
-        
-        {/* Header Bar */}
-        <div 
-          onClick={() => setIsOpen(!isOpen)}
-          className="px-3.5 py-2.5 bg-[#0b1329] border-b border-[#1e2e54] flex items-center justify-between cursor-pointer hover:bg-[#0f172a] transition-colors"
+    <div className="fixed bottom-5 right-5 z-40 max-w-sm select-none transition-all">
+      {!isOpen ? (
+        // Sleek Collapsed Pill Badge (Never blocks buttons)
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white border border-slate-200 shadow-xl hover:shadow-2xl hover:border-blue-400 text-slate-800 transition-all cursor-pointer group"
+          title="Open DiscrepBot Assistant"
         >
-          <div className="flex items-center gap-2">
-            <div className={`w-2.5 h-2.5 rounded-full ${
-              status === 'discrepancy' ? 'bg-amber-400 animate-pulse' :
-              status === 'verified' ? 'bg-emerald-400' :
-              status === 'scanning' ? 'bg-blue-400 animate-spin' :
-              'bg-cyan-400'
-            }`}></div>
-            <span className="text-xs font-bold text-white">
-              DiscrepBot AI Guide
-            </span>
-            <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#111c38] border border-[#1e2e54] text-slate-300 uppercase font-semibold">
-              {status}
-            </span>
+          <div className="relative flex items-center justify-center">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+          </div>
+          <Bot className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-bold font-sans">DiscrepBot AI</span>
+          <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+        </button>
+      ) : (
+        // Expanded White/Blue/Grey Card
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden w-80 sm:w-96 transition-all">
+          
+          {/* Header Bar */}
+          <div 
+            onClick={() => setIsOpen(false)}
+            className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-100 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`w-2.5 h-2.5 rounded-full ${
+                status === 'discrepancy' ? 'bg-amber-500 animate-pulse' :
+                status === 'verified' ? 'bg-emerald-500' :
+                status === 'scanning' ? 'bg-blue-600 animate-spin' :
+                'bg-blue-500'
+              }`}></div>
+              <span className="text-xs font-bold text-slate-900 font-sans">
+                DiscrepBot AI Guide
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase font-bold">
+                {status}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsExpanded(!isExpanded);
+                }}
+                className="p-1 rounded text-slate-500 hover:text-slate-800 transition-colors"
+                title={isExpanded ? "Collapse 3D view" : "Expand 3D view"}
+              >
+                {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(false);
+                }}
+                className="p-1 rounded text-slate-500 hover:text-slate-800 transition-colors"
+                title="Close Assistant"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-              className="p-1 rounded text-slate-400 hover:text-white transition-colors"
-              title={isExpanded ? "Collapse 3D view" : "Expand 3D view"}
-            >
-              {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpen(!isOpen);
-              }}
-              className="p-1 rounded text-slate-400 hover:text-white transition-colors"
-            >
-              {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Collapsible Content */}
-        {isOpen && (
-          <div className="p-3.5 space-y-3">
+          {/* Content */}
+          <div className="p-4 space-y-3">
             
             {/* 3D Robot View */}
             {isExpanded && (
-              <div className="rounded-xl border border-slate-800 bg-[#0b1329] overflow-hidden relative">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden relative shadow-inner">
                 <ThreeRobot status={status} size="compact" interactive={true} />
-                <div className="absolute bottom-1 right-2 text-[10px] font-mono text-slate-500">
+                <div className="absolute bottom-1 right-2 text-[10px] font-mono text-slate-400">
                   Mouse-Reactive Sensor
                 </div>
               </div>
             )}
 
             {/* Speech Bubble / Audit Insight */}
-            <div className={`p-3 rounded-xl border text-xs leading-relaxed font-mono ${
+            <div className={`p-3 rounded-xl border text-xs leading-relaxed font-sans ${
               status === 'discrepancy' 
-                ? 'bg-amber-950/20 border-amber-900/50 text-amber-300' 
+                ? 'bg-amber-50 border-amber-200 text-amber-900' 
                 : status === 'verified'
-                ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-300'
-                : 'bg-[#0b1329] border-slate-800 text-slate-200'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}>
               <div className="flex items-start gap-2.5">
-                <Bot className="w-4 h-4 mt-0.5 flex-shrink-0 text-cyan-400" />
-                <p className="text-[11px] leading-tight font-sans">{guideMessage}</p>
+                <Bot className="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-600" />
+                <p className="text-[11px] leading-relaxed">{guideMessage}</p>
               </div>
             </div>
 
             {/* Quick Action Links */}
-            <div className="flex items-center justify-between text-xs pt-1.5 border-t border-[#1e2e54]">
-              <Link
-                to="/support"
-                className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold transition-colors"
+            <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => navigate('/support')}
+                className="text-blue-600 hover:text-blue-700 flex items-center gap-1 font-bold transition-colors cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>Talk to AI Bot</span>
-              </Link>
+                <span>Open AI Chat Support</span>
+              </button>
 
               <button
-                onClick={() => navigate('/inspect/doc-freight-mismatch')}
-                className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-mono text-[11px]"
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="text-slate-500 hover:text-slate-900 flex items-center gap-1 font-mono text-[11px] cursor-pointer"
               >
-                <span>Sample Exception →</span>
+                <span>Workspace →</span>
               </button>
             </div>
 
           </div>
-        )}
 
-      </div>
+        </div>
+      )}
     </div>
   );
 }

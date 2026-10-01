@@ -17,10 +17,11 @@ export default function App() {
     <AuthProvider>
       <DocumentProvider>
         <BrowserRouter>
-          <div className="min-h-screen bg-[#0b1329] text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+          <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
             
             {/* Global Sticky Executive Navbar */}
             <Navbar />
+
 
             {/* Dynamic Multi-Page Router */}
             <div className="flex-1">
