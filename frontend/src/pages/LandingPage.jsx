@@ -21,10 +21,13 @@ import {
   History,
   Settings,
   Flame,
-  ShieldAlert
+  ShieldAlert,
+  BarChart3
 } from 'lucide-react';
 import ThreeRobot from '../components/ThreeRobot';
 import { useAuth } from '../context/AuthContext';
+import VisualParityBar from '../components/charts/VisualParityBar';
+import VarianceTrendChart from '../components/charts/VarianceTrendChart';
 
 const SAMPLES = {
   mismatch: {
@@ -168,33 +171,34 @@ export default function LandingPage() {
   const logoGlow = Math.max(1 - scrollY * 0.004, 0.15);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-maroon-800 selection:text-white transition-colors duration-200">
       
       {/* ============================================================== */}
       {/* APPLE OS CENTERED LOGO HERO SECTION                            */}
+      {/* Dynamic Maroon & White Glassmorphism Anchor                   */}
       {/* Moves up dynamically as the user scrolls up the page!         */}
       {/* ============================================================== */}
-      <section className="relative pt-8 pb-4 px-4 overflow-hidden border-b border-slate-200 dark:border-zinc-800/80 bg-gradient-to-b from-slate-100 via-white to-slate-50 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-950 transition-colors">
+      <section className="relative pt-8 pb-4 px-4 overflow-hidden border-b border-maroon-100/70 dark:border-zinc-800/80 bg-gradient-to-b from-maroon-50/40 via-white to-white dark:from-zinc-950 dark:via-black dark:to-black transition-colors">
         
-        {/* Apple-style Soft Ambient Radial Spotlight */}
+        {/* Apple-style Soft Ambient Radial Spotlight in Maroon */}
         <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[260px] bg-gradient-to-r from-blue-500/15 via-indigo-500/15 to-sky-400/15 dark:from-blue-600/25 dark:via-indigo-600/20 dark:to-sky-500/20 blur-[100px] rounded-full pointer-events-none transition-opacity duration-300"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[280px] bg-gradient-to-r from-maroon-800/15 via-rose-900/15 to-maroon-950/20 dark:from-maroon-800/25 dark:via-rose-900/20 dark:to-black blur-[110px] rounded-full pointer-events-none transition-opacity duration-300"
           style={{ opacity: logoGlow }}
         />
 
         {/* Dynamic Centered Logo Anchor - Scales & Floats Upward on Scroll */}
         <div 
-          className="max-w-2xl mx-auto flex flex-col items-center justify-center text-center relative z-10 py-6 will-change-transform"
+          className="max-w-2xl mx-auto flex flex-col items-center justify-center text-center relative z-10 py-4 will-change-transform"
           style={{
             transform: `translateY(-${logoTranslateY}px) scale(${logoScale})`,
             transition: 'transform 80ms cubic-bezier(0.16, 1, 0.3, 1)'
           }}
         >
-          {/* Glowing Apple-style Glassmorphism Emblem */}
+          {/* Glowing Glassmorphism Emblem in Royal Maroon */}
           <div className="relative group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400 rounded-3xl blur-md opacity-50 group-hover:opacity-85 transition duration-500"></div>
+            <div className="absolute -inset-1.5 bg-gradient-to-r from-maroon-800 via-rose-800 to-maroon-950 rounded-3xl blur-md opacity-60 group-hover:opacity-90 transition duration-500"></div>
             
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-700/80 shadow-2xl flex items-center justify-center backdrop-blur-xl">
+            <div className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-white dark:bg-zinc-900 border border-maroon-200/80 dark:border-zinc-700/80 shadow-2xl flex items-center justify-center backdrop-blur-xl">
               {/* Traffic Light Dot Micro-Accents */}
               <div className="absolute top-2 left-2 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
@@ -203,8 +207,8 @@ export default function LandingPage() {
               </div>
 
               {/* Main Emblem Icon */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                <Scale className="w-7 h-7" />
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-maroon-800 to-maroon-950 flex items-center justify-center text-white shadow-lg shadow-maroon-900/40 border border-maroon-700/50">
+                <Scale className="w-6 h-6" />
               </div>
 
               {/* Status Indicator */}
@@ -215,135 +219,142 @@ export default function LandingPage() {
           </div>
 
           {/* Centered Brand Title */}
-          <div className="mt-4 space-y-1">
+          <div className="mt-3 space-y-1">
             <h2 className="text-2xl sm:text-3xl font-black font-sans tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
               <span>Discrep</span>
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent">IQ</span>
-              <span className="text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 ml-1.5">
-                macOS UI
+              <span className="text-maroon-800 dark:text-rose-400">IQ</span>
+              <span className="text-[10px] uppercase font-mono tracking-widest px-2.5 py-0.5 rounded-full bg-maroon-100 dark:bg-maroon-950/80 text-maroon-900 dark:text-rose-300 border border-maroon-200 dark:border-maroon-800 ml-1.5 font-bold">
+                Maroon Edition
               </span>
             </h2>
-            <p className="text-xs sm:text-sm font-mono text-slate-500 dark:text-zinc-400 max-w-md mx-auto">
-              Autonomous Multimodal Vision AP Ledger &amp; PolicyGuard Compliance Shield
-            </p>
-          </div>
-
-          {/* Apple-style Capsule Indicators */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-[11px] font-mono">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              Engine Online
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">
-              ⚡ Gemini Vision Multimodal
-            </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">
-              🛡️ TamperShield Forensics
-            </span>
           </div>
 
           {/* Micro Scroll Hint */}
           {scrollY === 0 && (
-            <div className="mt-3 text-[10px] font-mono text-slate-400 dark:text-zinc-500 animate-bounce flex items-center gap-1">
-              <span>↓ Scroll down to see logo float upwards into top header</span>
+            <div className="mt-2 text-[10px] font-mono text-slate-400 dark:text-zinc-500 animate-bounce flex items-center gap-1">
+              <span>↓ Scroll down to see logo float upwards into header</span>
             </div>
           )}
         </div>
       </section>
 
-      {/* Hero Section: Crisp White & Blue Enterprise Aesthetic */}
-      <section className="relative pt-12 pb-20 px-4 sm:px-8 lg:px-16 border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 overflow-hidden transition-colors">
+      {/* ============================================================== */}
+      {/* CENTERED HERO: ROBOT IN CENTER & GET STARTED DIRECTLY BELOW IT */}
+      {/* ============================================================== */}
+      <section className="relative pt-10 pb-20 px-4 sm:px-8 border-b border-maroon-100/80 dark:border-zinc-800 bg-white dark:bg-black overflow-hidden transition-colors">
         
-        {/* Soft Ambient Radial Light */}
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[400px] bg-blue-100/50 dark:bg-blue-900/20 blur-[130px] rounded-full pointer-events-none"></div>
+        {/* Soft Ambient Radial Maroon Light */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-maroon-500/10 dark:bg-maroon-900/20 blur-[140px] rounded-full pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="max-w-4xl mx-auto w-full relative z-10 flex flex-col items-center text-center space-y-8">
           
-          {/* Left Column: Bold Typography & Actions */}
-          <div className="lg:col-span-8 space-y-7">
-            
-            {/* Enterprise Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-mono font-bold shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse"></span>
-              <span>DiscrepIQ Vision AI</span>
-              <span className="text-slate-300 dark:text-zinc-700">|</span>
-              <span>Automated Accounts Payable &amp; Expense Auditing</span>
-            </div>
+          {/* Centered Enterprise Tag Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-maroon-50 dark:bg-maroon-950/70 border border-maroon-200 dark:border-maroon-800 text-maroon-900 dark:text-rose-300 text-xs font-mono font-bold shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-maroon-800 dark:bg-rose-400 animate-pulse"></span>
+            <span>DiscrepIQ Vision AI</span>
+            <span className="text-maroon-300 dark:text-zinc-700">|</span>
+            <span>Automated Accounts Payable &amp; Expense Auditing</span>
+          </div>
 
-            {/* Giant Hero Title */}
-            <div className="space-y-1">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-mono font-black text-slate-900 dark:text-white tracking-tight uppercase leading-[0.98]">
-                <div className="flex items-baseline gap-4 sm:gap-6">
-                  <span>THE</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-extrabold">NEW</span>
-                </div>
-                <div>STANDARD</div>
-                <div className="flex items-baseline gap-4 sm:gap-6">
-                  <span>IN</span>
-                  <span className="text-slate-800 dark:text-zinc-300">DATA</span>
-                </div>
-                <div className="text-blue-600 dark:text-blue-400">
-                  ANALYSIS
-                </div>
-              </h1>
-            </div>
+          {/* Centered Giant Hero Title */}
+          <div className="space-y-2">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-mono font-black text-slate-900 dark:text-white tracking-tight uppercase leading-[0.98]">
+              <span className="block">THE <span className="text-maroon-800 dark:text-rose-400">NEW</span> STANDARD</span>
+              <span className="block text-slate-800 dark:text-zinc-200">IN DATA ANALYSIS</span>
+            </h1>
+            <p className="text-base sm:text-xl font-mono text-maroon-900 dark:text-rose-300 font-bold max-w-xl mx-auto">
+              Use Data to Get a 360-Degree View of Your Business
+            </p>
+          </div>
 
-            {/* Subtitle */}
-            <div className="space-y-2 max-w-2xl">
-              <p className="text-lg sm:text-xl font-mono text-slate-800 dark:text-zinc-200 leading-snug font-bold">
-                Use Data to Get a 360-Degree View of Your Business
-              </p>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-sans leading-relaxed">
-                Autonomous Accounts Payable verification powered by Gemini Vision, PolicyGuard compliance auditing, and TamperShield AI forensic manipulation detection. Eliminate fraudulent overbilling, catch alcohol and per-diem cap violations, and verify deterministic arithmetic parity before wire transfer dispatch.
-              </p>
-            </div>
+          {/* Centered Subtitle */}
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-sans leading-relaxed max-w-2xl mx-auto">
+            Autonomous Accounts Payable verification powered by Gemini Vision, PolicyGuard compliance auditing, and TamperShield AI forensic manipulation detection. Eliminate fraudulent overbilling, catch alcohol and per-diem cap violations, and verify deterministic arithmetic parity before wire transfer dispatch.
+          </p>
 
-
-            {/* Guaranteed Working Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+          {/* ========================================================== */}
+          {/* 1. CENTERED 3D AI ROBOT (AS REQUESTED)                    */}
+          {/* ========================================================== */}
+          <div className="w-full max-w-md mx-auto pt-2">
+            <div className="relative w-full rounded-3xl bg-white dark:bg-zinc-900 border border-maroon-200/80 dark:border-zinc-800 p-6 shadow-2xl transition-all hover:border-maroon-400 dark:hover:border-zinc-700">
               
-              {/* PRIMARY GET STARTED BUTTON */}
+              {/* Traffic Lights & Status */}
+              <div className="flex items-center justify-between border-b border-maroon-100 dark:border-zinc-800 pb-3 mb-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <span className="ml-2 text-xs font-mono uppercase text-slate-800 dark:text-zinc-200 font-bold">
+                    DiscrepBot AI Assistant
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  ONLINE
+                </span>
+              </div>
+
+              {/* 3D Robot Interactive Canvas */}
+              <div className="h-64 sm:h-72 w-full rounded-2xl overflow-hidden bg-gradient-to-b from-maroon-50/50 to-slate-100 dark:from-zinc-950 dark:to-zinc-900 border border-maroon-100 dark:border-zinc-800 relative shadow-inner">
+                <ThreeRobot interactive={true} />
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-maroon-100 dark:border-zinc-800 flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-500 dark:text-zinc-400">Interactive 3D Sensor Core</span>
+                <span className="text-[10px] text-maroon-800 dark:text-rose-400 font-bold">Ready to Audit</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ========================================================== */}
+          {/* 2. CENTERED "GET STARTED" OPTION BELOW AI ROBOT            */}
+          {/* ========================================================== */}
+          <div className="w-full flex flex-col items-center justify-center space-y-4 pt-2">
+            
+            {/* Primary Centered "Get Started" CTA Button */}
+            <div className="flex flex-wrap items-center justify-center gap-3.5">
               <button
                 type="button"
                 onClick={() => navigate('/dashboard')}
-                className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm uppercase tracking-wider transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2.5 cursor-pointer"
+                className="px-10 py-4.5 rounded-2xl bg-maroon-800 hover:bg-maroon-900 text-white font-black text-sm uppercase tracking-wider transition-all shadow-xl shadow-maroon-900/35 hover:shadow-maroon-900/50 hover:scale-105 active:scale-95 flex items-center gap-3 cursor-pointer"
                 id="hero-get-started-btn"
               >
-                <span>Get Started</span>
+                <span>Get Started Now</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              {/* 1-CLICK JUDGE PRESETS BUTTON */}
+              {/* 1-Click Judge Presets */}
               <button
                 type="button"
                 onClick={() => navigate('/dashboard')}
-                className="px-6 py-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-blue-500 hover:text-blue-600 flex items-center gap-2 cursor-pointer"
+                className="px-6 py-4.5 rounded-2xl bg-white dark:bg-zinc-900 hover:bg-maroon-50 dark:hover:bg-zinc-800 border border-maroon-200 dark:border-zinc-700 text-slate-800 dark:text-zinc-100 font-bold text-xs uppercase tracking-wider transition-all shadow-sm hover:border-maroon-600 flex items-center gap-2 cursor-pointer"
               >
-                <Zap className="w-4 h-4 text-blue-600" />
+                <Zap className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
                 <span>1-Click Judge Presets</span>
               </button>
 
-              {/* TALK TO AI BOT */}
+              {/* Ask DiscrepBot AI */}
               <button
                 type="button"
                 onClick={() => navigate('/support')}
-                className="px-5 py-4 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                className="px-6 py-4.5 rounded-2xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 text-slate-800 dark:text-zinc-200 font-bold text-xs transition-colors flex items-center gap-2 cursor-pointer"
               >
-                <Bot className="w-4 h-4 text-blue-600" />
-                <span>Ask AI Bot</span>
+                <Bot className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
+                <span>Talk to AI Bot</span>
               </button>
             </div>
 
-            {/* Direct Google & GitHub Sign In / Sign Up Shortcuts */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
-              <span className="text-slate-500 font-mono text-[11px] font-semibold">Quick Sign In / Sign Up:</span>
+            {/* Quick Google & GitHub Sign In / Sign Up Shortcuts */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 text-xs">
+              <span className="text-slate-500 dark:text-zinc-400 font-mono text-[11px] font-semibold">Instant Access:</span>
+              
               <button
                 type="button"
                 onClick={() => {
                   loginWithGoogle(false);
                   navigate('/dashboard');
                 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-xs hover:border-blue-400 cursor-pointer transition-all"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold shadow-xs hover:border-maroon-600 cursor-pointer transition-all"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
                   <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
@@ -360,9 +371,9 @@ export default function LandingPage() {
                   loginWithGitHub(false);
                   navigate('/dashboard');
                 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold shadow-xs hover:border-slate-400 cursor-pointer transition-all"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold shadow-xs hover:border-maroon-600 cursor-pointer transition-all"
               >
-                <svg className="w-3.5 h-3.5 fill-current text-slate-900" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 fill-current text-slate-900 dark:text-white" viewBox="0 0 24 24">
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                 </svg>
                 <span>GitHub</span>
@@ -370,63 +381,33 @@ export default function LandingPage() {
 
               <Link
                 to="/register"
-                className="text-blue-600 hover:text-blue-700 font-bold underline underline-offset-2 ml-1"
+                className="text-maroon-800 dark:text-rose-400 hover:text-maroon-900 font-bold underline underline-offset-2 ml-1"
               >
                 Sign Up Free →
               </Link>
             </div>
 
             {/* Key Value Props Ticker */}
-            <div className="pt-6 border-t border-slate-200 grid grid-cols-3 gap-6 max-w-lg text-xs font-mono">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="text-slate-900 font-bold text-sm">PolicyGuard</div>
-                <div className="text-slate-500 text-[11px] mt-0.5">3 Compliance Rules</div>
+            <div className="pt-4 grid grid-cols-3 gap-4 max-w-lg w-full text-xs font-mono">
+              <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-maroon-100 dark:border-zinc-800 shadow-xs">
+                <div className="text-maroon-900 dark:text-rose-300 font-bold text-sm">PolicyGuard</div>
+                <div className="text-slate-500 dark:text-zinc-400 text-[11px] mt-0.5">3 Compliance Rules</div>
               </div>
-              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200">
-                <div className="text-blue-700 font-bold text-sm">TamperShield</div>
-                <div className="text-blue-600 text-[11px] mt-0.5">AI Forgery Detection</div>
+              <div className="p-3 bg-maroon-50/70 dark:bg-zinc-900 rounded-xl border border-maroon-200 dark:border-zinc-800 shadow-xs">
+                <div className="text-maroon-800 dark:text-rose-400 font-bold text-sm">TamperShield</div>
+                <div className="text-maroon-700 dark:text-zinc-400 text-[11px] mt-0.5">AI Forgery Detection</div>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-                <div className="text-emerald-700 font-bold text-sm">₹0.00 Variance</div>
-                <div className="text-emerald-600 text-[11px] mt-0.5">Deterministic Math</div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Right Column: 3D Robot Assistant Guide */}
-          <div className="lg:col-span-4 flex justify-center">
-            <div className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 shadow-xl transition-colors">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3 mb-4">
-                <span className="text-xs font-mono uppercase text-slate-700 dark:text-zinc-200 font-bold flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse"></span>
-                  DiscrepBot AI Assistant
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 font-bold">
-                  ACTIVE
-                </span>
-              </div>
-
-              {/* 3D Robot Interactive Canvas */}
-              <div className="h-64 w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/60 relative">
-                <ThreeRobot interactive={true} />
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-500 dark:text-zinc-400">Autonomous AP Auditor</span>
-                <button 
-                  onClick={() => navigate('/support')}
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-bold flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Chat With Bot</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
+              <div className="p-3 bg-emerald-50 dark:bg-zinc-900 rounded-xl border border-emerald-200 dark:border-zinc-800 shadow-xs">
+                <div className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">₹0.00 Variance</div>
+                <div className="text-emerald-600 dark:text-zinc-400 text-[11px] mt-0.5">Deterministic Math</div>
               </div>
             </div>
+
           </div>
 
         </div>
       </section>
+
 
       {/* Interactive Audit Simulator Widget */}
       <section id="playground" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
@@ -454,8 +435,8 @@ export default function LandingPage() {
                   onClick={() => setActiveSampleKey(key)}
                   className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                     isSelected
-                      ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-md shadow-blue-600/30'
-                      : 'bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-800 shadow-xs'
+                      ? 'bg-maroon-800 text-white shadow-md shadow-maroon-900/30 font-bold'
+                      : 'bg-white dark:bg-zinc-900 hover:bg-maroon-50/50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 border border-maroon-200/60 dark:border-zinc-800 shadow-xs'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full ${s.hasError ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
@@ -467,10 +448,10 @@ export default function LandingPage() {
         </div>
 
         {/* Side-by-Side Playground Card */}
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden transition-colors">
+        <div className="bg-white dark:bg-zinc-900 border border-maroon-100 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden transition-colors">
           
           {/* Card Subheader */}
-          <div className="px-6 py-4 bg-slate-50 dark:bg-zinc-800/50 border-b border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="px-6 py-4 bg-maroon-50/40 dark:bg-zinc-800/50 border-b border-maroon-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
               <span className="text-slate-500 dark:text-zinc-400 font-mono">Scenario:</span>
               <span className="font-bold text-slate-900 dark:text-white">{activeSample.vendor}</span>
@@ -482,7 +463,7 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => navigate(`/inspect/${activeSample.id}`)}
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-mono text-xs font-bold flex items-center gap-1 cursor-pointer"
+              className="text-maroon-800 dark:text-rose-400 hover:text-maroon-900 font-mono text-xs font-bold flex items-center gap-1 cursor-pointer"
             >
               <span>Open in Full Inspector</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -497,7 +478,7 @@ export default function LandingPage() {
               <div>
                 <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-zinc-400 mb-3">
                   <span className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-zinc-200">
-                    <FileText className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <FileText className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
                     INGESTED DOCUMENT CAPTURE
                   </span>
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">OCR Pipeline · OK</span>
@@ -522,7 +503,7 @@ export default function LandingPage() {
               <div>
                 <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-zinc-400 mb-3">
                   <span className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-zinc-200">
-                    <Scale className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <Scale className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
                     AUDITED LINE-ITEM LEDGER
                   </span>
                   <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono uppercase font-bold ${
@@ -547,7 +528,7 @@ export default function LandingPage() {
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/80">
                       {activeSample.items.map((it, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-zinc-900/60">
+                        <tr key={idx} className="hover:bg-maroon-50/30 dark:hover:bg-zinc-900/60">
                           <td className="px-3.5 py-2.5 text-slate-800 dark:text-zinc-200 font-medium">{it.name}</td>
                           <td className="px-3 py-2.5 text-right font-mono text-slate-600 dark:text-zinc-400">{it.qty}</td>
                           <td className="px-3 py-2.5 text-right font-mono text-slate-600 dark:text-zinc-400">{it.rate}</td>
@@ -580,6 +561,14 @@ export default function LandingPage() {
                   </div>
                 </div>
 
+                {/* Live Visual Parity Bar Graph */}
+                <div className="mt-4">
+                  <VisualParityBar 
+                    statedTotal={parseFloat(String(activeSample.statedTotal || 0).replace(/[^0-9.]/g, ''))}
+                    calculatedTotal={parseFloat(String(activeSample.calculatedTotal || 0).replace(/[^0-9.]/g, ''))}
+                  />
+                </div>
+
                 {/* Dynamic Variance Notification Banner */}
                 <div className={`mt-3 p-3.5 rounded-xl border text-xs font-mono ${
                   activeSample.hasError
@@ -609,7 +598,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => navigate(`/inspect/${activeSample.id}`)}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white text-xs font-bold transition-all shadow-md shadow-maroon-900/25 flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Open in Inspector</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -624,8 +613,26 @@ export default function LandingPage() {
 
       </section>
 
-      {/* Feature Grid: Enterprise White/Blue Cards */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 transition-colors">
+      {/* Visual Analytics & Telemetry Showcase */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-maroon-100 dark:border-zinc-800">
+        <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-maroon-800 dark:text-rose-400 font-bold">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>Autonomous Financial Telemetry</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-sans">
+            Visual Intelligence That Makes Audits Obvious
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-sans">
+            Turn opaque receipts and invoices into crystal-clear variance trends, real-time parity meters, and automated risk heatmaps.
+          </p>
+        </div>
+
+        <VarianceTrendChart />
+      </section>
+
+      {/* Feature Grid: Enterprise Maroon/White Cards */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-maroon-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 transition-colors">
         <div className="max-w-6xl mx-auto">
           
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -640,8 +647,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Feature 1 */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-maroon-100 dark:border-zinc-800 shadow-sm space-y-3 transition-colors hover:border-maroon-400">
+              <div className="w-10 h-10 rounded-xl bg-maroon-50 dark:bg-maroon-950 text-maroon-800 dark:text-rose-400 flex items-center justify-center border border-maroon-100 dark:border-maroon-800">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -653,8 +660,8 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+            <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-maroon-100 dark:border-zinc-800 shadow-sm space-y-3 transition-colors hover:border-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-100 dark:border-rose-900">
                 <Flame className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -666,8 +673,8 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-maroon-100 dark:border-zinc-800 shadow-sm space-y-3 transition-colors hover:border-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-900">
                 <Scale className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -683,16 +690,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Prominent Bottom Call-to-Action Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50 to-blue-50/60 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-950 border-t border-slate-200 dark:border-zinc-800 text-center transition-colors">
+      {/* Prominent Bottom Call-to-Action Section in Maroon */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-maroon-50/30 to-maroon-50/60 dark:from-black dark:via-zinc-950 dark:to-black border-t border-maroon-100 dark:border-zinc-800 text-center transition-colors">
         <div className="max-w-4xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 text-xs font-mono font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-maroon-100 dark:bg-maroon-950/80 border border-maroon-200 dark:border-maroon-800 text-maroon-900 dark:text-rose-300 text-xs font-mono font-bold">
+            <Sparkles className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
             <span>Ready to Eliminate Accounts Payable Discrepancies?</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-sans">
-            Start Auditing with <span className="text-blue-600 dark:text-blue-400">DiscrepIQ</span> Today
+            Start Auditing with <span className="text-maroon-800 dark:text-rose-400">DiscrepIQ</span> Today
           </h2>
 
           <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-400 max-w-2xl mx-auto font-sans leading-relaxed">
@@ -704,7 +711,7 @@ export default function LandingPage() {
               type="button"
               onClick={() => navigate('/dashboard')}
               id="cta-get-started-btn"
-              className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm uppercase tracking-wider transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer"
+              className="px-8 py-4 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-extrabold text-sm uppercase tracking-wider transition-all shadow-lg shadow-maroon-900/30 hover:shadow-maroon-900/50 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer"
             >
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4" />
@@ -716,7 +723,7 @@ export default function LandingPage() {
                 loginWithGoogle(false);
                 navigate('/dashboard');
               }}
-              className="px-6 py-4 rounded-xl bg-white dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 text-slate-800 dark:text-zinc-100 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-blue-500 hover:text-blue-600 flex items-center gap-2.5 cursor-pointer"
+              className="px-6 py-4 rounded-xl bg-white dark:bg-zinc-800 hover:bg-maroon-50 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 text-slate-800 dark:text-zinc-100 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-maroon-700 hover:text-maroon-800 flex items-center gap-2.5 cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
@@ -733,7 +740,7 @@ export default function LandingPage() {
                 loginWithGitHub(false);
                 navigate('/dashboard');
               }}
-              className="px-6 py-4 rounded-xl bg-white dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 text-slate-800 dark:text-zinc-100 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-slate-500 hover:text-slate-900 flex items-center gap-2.5 cursor-pointer"
+              className="px-6 py-4 rounded-xl bg-white dark:bg-zinc-800 hover:bg-maroon-50 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 text-slate-800 dark:text-zinc-100 font-bold text-xs uppercase tracking-wider transition-all shadow-xs hover:border-slate-500 hover:text-slate-900 flex items-center gap-2.5 cursor-pointer"
             >
               <svg className="w-4 h-4 fill-current text-slate-900 dark:text-white" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
@@ -745,17 +752,17 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-600 dark:text-zinc-400 text-xs font-mono transition-colors">
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-maroon-100 dark:border-zinc-800 bg-white dark:bg-black text-slate-600 dark:text-zinc-400 text-xs font-mono transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-900 dark:text-white">DiscrepIQ AP Audit Platform</span>
-            <span>· v2.5 Enterprise (Apple OS UI)</span>
+            <span>· Maroon &amp; White Edition</span>
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard')} className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">Workspace</button>
-            <button onClick={() => navigate('/history')} className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">Audit Ledger</button>
-            <button onClick={() => navigate('/analytics')} className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">Analytics</button>
-            <button onClick={() => navigate('/support')} className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">AI Support</button>
+            <button onClick={() => navigate('/dashboard')} className="hover:text-maroon-800 dark:hover:text-rose-400 cursor-pointer">Workspace</button>
+            <button onClick={() => navigate('/history')} className="hover:text-maroon-800 dark:hover:text-rose-400 cursor-pointer">Audit Ledger</button>
+            <button onClick={() => navigate('/analytics')} className="hover:text-maroon-800 dark:hover:text-rose-400 cursor-pointer">Analytics</button>
+            <button onClick={() => navigate('/support')} className="hover:text-maroon-800 dark:hover:text-rose-400 cursor-pointer">AI Support</button>
           </div>
         </div>
       </footer>
@@ -763,4 +770,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
 

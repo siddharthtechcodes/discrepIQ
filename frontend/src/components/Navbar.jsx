@@ -1,243 +1,234 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Layers, 
-  ArrowRight, 
-  LogOut, 
+  PanelLeft, 
+  Settings, 
   User, 
+  LogOut, 
+  Sun, 
+  Moon, 
+  Zap, 
   ShieldCheck, 
-  Activity, 
-  Menu, 
-  X,
-  FileCheck2,
-  Sparkles,
-  Bot,
-  History,
-  Settings,
-  Zap,
-  PanelLeft,
-  Sun,
-  Moon,
-  BarChart3,
-  LayoutDashboard
+  ChevronDown,
+  Layers,
+  ArrowRight,
+  UserCheck
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, PRESET_ACCOUNTS } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({ onToggleSidebar }) {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, loginAsGuest, loginWithGoogle, loginWithGitHub, logout } = useAuth();
+  const { user, isAuthenticated, loginAsGuest, logout, switchAccount } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
-  
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef(null);
+
+  // Close account menu dropdown on outside click
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const handleClickOutside = (e) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) {
+        setAccountMenuOpen(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const isActive = (path) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
-  };
-
   const handleSignOut = () => {
+    setAccountMenuOpen(false);
     logout();
     navigate('/login');
   };
 
-  const navLinks = [
-    { name: 'Overview', path: '/', icon: Activity },
-    { name: 'Workspace', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Inspector', path: '/inspect/test-3-contractor', icon: FileCheck2 },
-    { name: 'Audit Ledger', path: '/history', icon: History },
-    { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'AI Support', path: '/support', icon: Bot, badge: 'AI' },
-  ];
-
-  // When scrolled down, show the center logo in navbar; when at top, it stays subtle because hero has the large center logo
-  const isScrolled = scrollY > 60;
-
   return (
-    <header className="sticky top-8 z-40 w-full border-b border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xs transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-maroon-100/80 dark:border-zinc-800/80 bg-white/90 dark:bg-black/90 backdrop-blur-xl shadow-xs transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         
-        {/* Left: Sidebar Toggle Button & Quick Brand */}
-        <div className="flex items-center gap-3">
-          {/* macOS Slidebar Toggle Button */}
+        {/* Left: Left Slidebar Trigger & Brand Emblem */}
+        <div className="flex items-center gap-3.5">
+          {/* macOS Style Sidebar Drawer Button */}
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700/80 text-slate-700 dark:text-zinc-200 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
-            title="Toggle Left Sidebar"
+            className="p-2.5 rounded-xl bg-maroon-50 hover:bg-maroon-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-maroon-200/80 dark:border-zinc-700/80 text-maroon-900 dark:text-zinc-200 transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 group"
+            title="Open Navigation Sidebar"
           >
-            <PanelLeft className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span className="hidden sm:inline text-xs font-semibold">Sidebar</span>
+            <PanelLeft className="w-4 h-4 text-maroon-800 dark:text-rose-400 group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline text-xs font-bold text-maroon-900 dark:text-zinc-200">Menu</span>
           </button>
 
-          {/* Left mini brand link */}
+          {/* Brand Logo & Name */}
           <Link 
             to="/" 
-            className="flex items-center gap-2 group focus:outline-hidden"
+            className="flex items-center gap-2.5 group focus:outline-hidden"
           >
-            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30 group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-maroon-950 via-maroon-800 to-rose-700 flex items-center justify-center text-white shadow-md shadow-maroon-900/30 group-hover:scale-105 transition-transform border border-maroon-700/40">
               <Layers className="w-4 h-4 text-white" />
             </div>
-            <span className="hidden md:inline font-extrabold tracking-tight text-base text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors font-sans">
-              Discrep<span className="text-blue-600 dark:text-blue-400">IQ</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="font-black tracking-tight text-lg text-slate-900 dark:text-white font-sans leading-none">
+                Discrep<span className="text-maroon-800 dark:text-rose-400">IQ</span>
+              </span>
+              <span className="text-[9px] font-mono tracking-widest uppercase text-maroon-800/80 dark:text-zinc-400 font-bold">
+                Vision AP Audit
+              </span>
+            </div>
           </Link>
         </div>
 
-        {/* Center: Apple OS Dynamic Scroll-Centered Logo / Navigation Capsule */}
-        <div className="hidden lg:flex items-center justify-center flex-1">
-          {/* If scrolled, reveal the centered DiscrepIQ badge moving into place */}
-          <div className={`transition-all duration-300 transform flex items-center gap-2 ${
-            isScrolled ? 'opacity-100 scale-100 translate-y-0 mr-4' : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-          }`}>
-            <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-              DiscrepIQ
-            </span>
-          </div>
-
-          {/* Desktop Apple-Style Capsule Pill Navigation */}
-          <nav className="flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-zinc-800/90 border border-slate-200 dark:border-zinc-700/60 text-xs font-medium backdrop-blur-md">
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
-                    active 
-                      ? 'bg-white dark:bg-zinc-950 text-blue-600 dark:text-blue-400 font-bold shadow-xs' 
-                      : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-zinc-700/50'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{link.name}</span>
-                  {link.badge && (
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-mono uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold">
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+        {/* Center: Apple-style Minimal Status Badge */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-maroon-50/70 dark:bg-zinc-900/80 border border-maroon-100 dark:border-zinc-800 text-[11px] font-mono">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="text-maroon-900 dark:text-zinc-300 font-semibold">Gemini 3.5 Multimodal Ledger</span>
+          <span className="text-maroon-300 dark:text-zinc-600">|</span>
+          <span className="text-slate-500 dark:text-zinc-400">PolicyGuard Active</span>
         </div>
 
-        {/* Right: Theme Toggle & Primary Action */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right: Account Settings, Login/Sign Up Info, and Dark Mode */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
           
-          {/* Apple Control Center Dark/Light Mode Capsule Switch */}
+          {/* Dark / Light Mode Segmented Toggle Switch */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700/80 text-slate-700 dark:text-zinc-200 transition-all shadow-xs cursor-pointer active:scale-95"
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            className="p-2.5 rounded-xl bg-maroon-50/80 hover:bg-maroon-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-maroon-200/80 dark:border-zinc-700/80 text-maroon-900 dark:text-zinc-200 transition-all shadow-xs cursor-pointer active:scale-95"
+            title={isDark ? "Switch to Light Mode (Maroon & White)" : "Switch to Dark Mode (Midnight Black & Maroon)"}
           >
             {isDark ? (
               <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" />
             ) : (
-              <Moon className="w-4 h-4 text-slate-700" />
+              <Moon className="w-4 h-4 text-maroon-900" />
             )}
           </button>
 
-          {/* Primary "Get Started" Action Button */}
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard')}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-blue-600/25 hover:shadow-blue-600/40 active:translate-y-0.5 cursor-pointer flex items-center gap-1.5"
-            title="Launch Ingestion Workspace"
-          >
-            <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-
-          {/* User Log In / Profile Area */}
+          {/* Account Settings & Profile / Sign In Section */}
           {isAuthenticated && user ? (
-            <div className="hidden sm:flex items-center gap-1.5">
-              <Link
-                to="/account"
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-colors text-xs text-slate-800 dark:text-zinc-200"
-              >
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold font-mono">
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+            <div className="relative" ref={accountMenuRef}>
+              
+              <div className="flex items-center gap-1.5">
+                {/* Direct Account Settings Button */}
+                <Link
+                  to="/account"
+                  className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 hover:bg-maroon-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 hover:text-maroon-800 dark:hover:text-rose-400 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  title="Auditor Account & Settings"
+                >
+                  <Settings className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
+                  <span className="hidden lg:inline text-xs font-bold">Settings</span>
+                </Link>
+
+                {/* Profile Pill Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-maroon-50 dark:bg-zinc-900 hover:bg-maroon-100 dark:hover:bg-zinc-800 border border-maroon-200 dark:border-zinc-700 transition-all text-xs cursor-pointer"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-maroon-800 text-white flex items-center justify-center text-xs font-bold font-mono shadow-xs">
+                    {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <p className="font-bold text-slate-900 dark:text-white leading-tight truncate max-w-[110px]">
+                      {user.name}
+                    </p>
+                    <p className="text-[10px] text-maroon-700 dark:text-rose-400 font-mono leading-none">
+                      {user.role ? user.role.split(' ')[0] : 'Auditor'}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              </div>
+
+              {/* Account Dropdown Popover */}
+              {accountMenuOpen && (
+                <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-3 z-50 space-y-2 animate-fadeIn">
+                  <div className="p-2.5 rounded-xl bg-maroon-50 dark:bg-zinc-950/80 border border-maroon-100 dark:border-zinc-800">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">{user.name}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-mono truncate">{user.email}</p>
+                    <p className="text-[10px] text-maroon-800 dark:text-rose-400 font-mono font-semibold mt-1">{user.role}</p>
+                  </div>
+
+                  {/* Switch Account Persona Shortcut */}
+                  <div className="space-y-1">
+                    <p className="text-[10px] uppercase font-mono tracking-wider text-slate-400 dark:text-zinc-500 font-bold px-2">
+                      Switch Auditor Persona
+                    </p>
+                    {PRESET_ACCOUNTS.map((acc) => (
+                      <button
+                        key={acc.id}
+                        type="button"
+                        onClick={() => {
+                          switchAccount(acc.id);
+                          setAccountMenuOpen(false);
+                        }}
+                        className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                          user.email === acc.email
+                            ? 'bg-maroon-100/70 dark:bg-zinc-800 text-maroon-900 dark:text-white font-bold'
+                            : 'hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300'
+                        }`}
+                      >
+                        <span className="truncate">{acc.name}</span>
+                        <span className="text-[9px] font-mono text-slate-400">{acc.badge}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 dark:border-zinc-800 space-y-1">
+                    <Link
+                      to="/account"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 font-semibold"
+                    >
+                      <Settings className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
+                      <span>Account Settings &amp; Rules</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-semibold cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
                 </div>
-                <span className="font-semibold text-xs truncate max-w-[90px]">{user.name.split(' ')[0]}</span>
-              </Link>
+              )}
+
             </div>
           ) : (
-            <div className="flex items-center gap-1.5">
+            /* Login & Sign Up Options for Guests */
+            <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-2.5 py-1.5 text-xs text-slate-700 dark:text-zinc-300 hover:text-blue-600 font-semibold transition-colors rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800"
+                className="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-zinc-200 hover:text-maroon-800 dark:hover:text-rose-400 hover:bg-maroon-50 dark:hover:bg-zinc-800 transition-colors"
               >
-                <span>Log In</span>
+                Log In
               </Link>
+
+              <Link
+                to="/register"
+                className="px-4 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-maroon-900/25 hover:shadow-maroon-900/40 active:translate-y-0.5"
+              >
+                Sign Up
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => loginAsGuest()}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-zinc-900 hover:bg-slate-200 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-mono font-semibold text-slate-800 dark:text-zinc-200 cursor-pointer"
+                title="1-Click Judge / Demo Access"
+              >
+                <Zap className="w-3.5 h-3.5 text-maroon-700 dark:text-rose-400" />
+                <span>Judge Demo</span>
+              </button>
             </div>
           )}
 
-          {/* Mobile Menu Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 hover:text-blue-600"
-            title="Toggle Menu"
-          >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 space-y-2 shadow-xl animate-fadeIn">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                isActive(link.path) 
-                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-bold' 
-                  : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <link.icon className="w-4 h-4 text-blue-600" />
-                <span>{link.name}</span>
-              </div>
-              {link.badge && (
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
-                  {link.badge}
-                </span>
-              )}
-            </Link>
-          ))}
-          <div className="pt-2 border-t border-slate-100 dark:border-zinc-800">
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate('/dashboard');
-              }}
-              className="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider text-center"
-            >
-              Get Started Now
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </header>
   );
 }
+

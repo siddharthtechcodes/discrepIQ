@@ -157,7 +157,7 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 py-8 px-4 sm:px-6 lg:px-8 selection:bg-blue-600 selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 py-8 px-4 sm:px-6 lg:px-8 selection:bg-maroon-800 selection:text-white transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* Apple OS Window Container Frame */}
@@ -179,14 +179,14 @@ export default function AccountPage() {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="px-3 py-1 rounded-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 text-xs font-mono font-medium text-slate-700 dark:text-zinc-200 flex items-center gap-1.5 shadow-xs hover:border-blue-500 cursor-pointer transition-colors"
+                className="px-3 py-1 rounded-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 text-xs font-mono font-medium text-slate-700 dark:text-zinc-200 flex items-center gap-1.5 shadow-xs hover:border-maroon-500 cursor-pointer transition-colors"
                 title="Toggle Theme"
               >
-                {isDark ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-blue-600" />}
+                {isDark ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-maroon-800" />}
                 <span>{isDark ? 'Dark Mode' : 'Light Mode'}</span>
               </button>
 
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-bold">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-maroon-50 dark:bg-maroon-950 text-maroon-900 dark:text-rose-300 border border-maroon-200 dark:border-maroon-800 font-bold">
                 macOS AP Pro
               </span>
             </div>
@@ -211,7 +211,7 @@ export default function AccountPage() {
                 onClick={() => setShowAddAccountModal(true)}
                 className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
               >
-                <PlusCircle className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <PlusCircle className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
                 <span>Add Different Account</span>
               </button>
 
@@ -219,7 +219,7 @@ export default function AccountPage() {
                 <button
                   type="button"
                   onClick={() => { loginAsGuest(); showToast('Signed in as Hackathon Judge / Guest'); }}
-                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-maroon-900/25 cursor-pointer"
                 >
                   <Zap className="w-3.5 h-3.5 fill-current" />
                   <span>1-Click Judge Demo</span>
@@ -244,7 +244,7 @@ export default function AccountPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <UserCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <UserCheck className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
                   <span>Switch Auditor Persona &amp; Work Account</span>
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-zinc-400">
@@ -253,7 +253,7 @@ export default function AccountPage() {
               </div>
 
               <span className="text-[11px] font-mono text-slate-500 dark:text-zinc-400 hidden sm:inline">
-                Active: <strong className="text-blue-600 dark:text-blue-400 font-bold">{user?.name}</strong>
+                Active: <strong className="text-maroon-800 dark:text-rose-400 font-bold">{user?.name}</strong>
               </span>
             </div>
 
@@ -269,26 +269,26 @@ export default function AccountPage() {
                     }}
                     className={`p-4 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between ${
                       isActive
-                        ? 'bg-white dark:bg-zinc-900 border-blue-500 dark:border-blue-400 shadow-md ring-2 ring-blue-500/20'
+                        ? 'bg-white dark:bg-zinc-900 border-maroon-700 dark:border-rose-400 shadow-md ring-2 ring-maroon-700/20'
                         : 'bg-white/80 dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 hover:bg-white dark:hover:bg-zinc-900'
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700 font-bold">
+                      <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-mono bg-maroon-100 dark:bg-maroon-950 text-maroon-900 dark:text-rose-300 border border-maroon-300 dark:border-maroon-700 font-bold">
                         ACTIVE
                       </span>
                     )}
 
                     <div>
                       <div className="flex items-center gap-2.5 mb-2">
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-sm">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-maroon-950 via-maroon-800 to-rose-700 text-white font-black text-sm flex items-center justify-center shadow-sm">
                           {acc.avatar}
                         </div>
                         <div>
                           <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
                             {acc.name}
                           </h4>
-                          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono font-medium">
+                          <span className="text-[10px] text-maroon-800 dark:text-rose-400 font-mono font-medium">
                             {acc.badge}
                           </span>
                         </div>
@@ -306,7 +306,7 @@ export default function AccountPage() {
                       type="button"
                       className={`mt-3 w-full py-1.5 rounded-lg text-[11px] font-mono font-bold transition-colors ${
                         isActive
-                          ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                          ? 'bg-maroon-50 dark:bg-maroon-950/80 text-maroon-900 dark:text-rose-300 border border-maroon-200 dark:border-maroon-800'
                           : 'bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300'
                       }`}
                     >
@@ -322,13 +322,13 @@ export default function AccountPage() {
           <div className="p-6 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-600/20">
+                <div className="w-12 h-12 rounded-xl bg-maroon-800 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-maroon-900/20">
                   {name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <h2 className="text-base font-bold text-slate-900 dark:text-white">{name}</h2>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
-                    {role} · <span className="text-blue-600 dark:text-blue-400 font-semibold">{company}</span>
+                    {role} · <span className="text-maroon-800 dark:text-rose-400 font-semibold">{company}</span>
                   </p>
                 </div>
               </div>
@@ -348,7 +348,7 @@ export default function AccountPage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
                   />
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function AccountPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
                   />
                 </div>
               </div>
@@ -374,7 +374,7 @@ export default function AccountPage() {
                     type="text"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
                   />
                 </div>
               </div>
@@ -387,7 +387,7 @@ export default function AccountPage() {
                     type="text"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white outline-hidden transition-colors"
                   />
                 </div>
               </div>
@@ -395,7 +395,7 @@ export default function AccountPage() {
               <div className="sm:col-span-2 flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-maroon-900/25 cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save Profile Information</span>
@@ -411,7 +411,7 @@ export default function AccountPage() {
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <KeyRound className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
                 <span>Multimodal Vision AI Engine Configuration</span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
@@ -436,7 +436,7 @@ export default function AccountPage() {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder="AIzaSy... or AQ..."
-                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 pr-3 text-xs text-slate-900 dark:text-white font-mono outline-hidden transition-colors"
+                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 pl-9 pr-3 text-xs text-slate-900 dark:text-white font-mono outline-hidden transition-colors"
                 />
               </div>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-mono mt-1">
@@ -451,7 +451,7 @@ export default function AccountPage() {
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-mono outline-hidden transition-colors cursor-pointer"
+                className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-mono outline-hidden transition-colors cursor-pointer"
               >
                 <option value="gemini-3.5-flash">gemini-3.5-flash (Recommended · Ultra Fast &amp; High Math Parity)</option>
                 <option value="gemini-3.8-flash">gemini-3.8-flash (Latest General Multimodal Release)</option>
@@ -483,14 +483,14 @@ export default function AccountPage() {
                 disabled={isTestingKey}
                 className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 text-xs font-mono font-medium transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isTestingKey ? 'animate-spin text-blue-600' : 'text-slate-500'}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isTestingKey ? 'animate-spin text-maroon-800 dark:text-rose-400' : 'text-slate-500'}`} />
                 <span>{isTestingKey ? 'Testing Engine Latency...' : 'Test Connection & Latency'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSaveEngineConfig}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-maroon-900/25 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Engine Settings</span>
@@ -503,7 +503,7 @@ export default function AccountPage() {
         <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-5 transition-colors">
           <div className="border-b border-slate-100 dark:border-zinc-800 pb-3">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <Sliders className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
               <span>Accounts Payable Reconciliation Rules</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
@@ -532,7 +532,7 @@ export default function AccountPage() {
                 step="0.01"
                 value={tolerance}
                 onChange={(e) => setTolerance(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
+                className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 focus:bg-white dark:focus:bg-zinc-900 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
               />
               <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono mt-1 block">
                 Discrepancies below this amount are categorized as fractional bank rounding.
@@ -545,7 +545,7 @@ export default function AccountPage() {
                   type="checkbox"
                   checked={autoReconcile}
                   onChange={(e) => setAutoReconcile(e.target.checked)}
-                  className="rounded border-slate-300 dark:border-zinc-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-slate-300 dark:border-zinc-700 text-maroon-800 focus:ring-maroon-800"
                 />
                 <div>
                   <p className="font-semibold text-xs text-slate-900 dark:text-white">Auto-approve invoices with 100% Zero-Variance</p>
@@ -558,7 +558,7 @@ export default function AccountPage() {
                   type="checkbox"
                   checked={flagMissingGstin}
                   onChange={(e) => setFlagMissingGstin(e.target.checked)}
-                  className="rounded border-slate-300 dark:border-zinc-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-slate-300 dark:border-zinc-700 text-maroon-800 focus:ring-maroon-800"
                 />
                 <div>
                   <p className="font-semibold text-xs text-slate-900 dark:text-white">Flag vendor invoices missing valid GSTIN registration</p>
@@ -575,7 +575,7 @@ export default function AccountPage() {
             <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                  <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <User className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
                   <span>Create Different Auditor Profile</span>
                 </h3>
                 <button
@@ -596,7 +596,7 @@ export default function AccountPage() {
                     placeholder="e.g. Vikram Malhotra"
                     value={newAccName}
                     onChange={(e) => setNewAccName(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
                   />
                 </div>
 
@@ -608,7 +608,7 @@ export default function AccountPage() {
                     placeholder="e.g. vikram@finaudit.co.in"
                     value={newAccEmail}
                     onChange={(e) => setNewAccEmail(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
                   />
                 </div>
 
@@ -619,7 +619,7 @@ export default function AccountPage() {
                     placeholder="e.g. KPMG India AP Group"
                     value={newAccCompany}
                     onChange={(e) => setNewAccCompany(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
                   />
                 </div>
 
@@ -630,7 +630,7 @@ export default function AccountPage() {
                     placeholder="e.g. Senior Tax Auditor"
                     value={newAccRole}
                     onChange={(e) => setNewAccRole(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 focus:border-maroon-600 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-hidden"
                   />
                 </div>
 
@@ -644,7 +644,7 @@ export default function AccountPage() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/25 cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs shadow-md shadow-maroon-900/25 cursor-pointer"
                   >
                     Create &amp; Switch
                   </button>

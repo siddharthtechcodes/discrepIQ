@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useDocuments } from '../context/DocumentContext';
 import ExtractedDataViewer from '../components/ExtractedDataViewer';
+import VisualParityBar from '../components/charts/VisualParityBar';
 
 export default function InspectorPage() {
   const { id } = useParams();
@@ -174,15 +175,15 @@ export default function InspectorPage() {
 
   if (!doc) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-6">
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 max-w-md w-full text-center shadow-lg space-y-4">
-          <FileText className="w-12 h-12 text-blue-600 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900">Loading Document...</h2>
-          <p className="text-xs text-slate-500 font-mono">Preparing multimodal OCR ledger and forensic analysis.</p>
+      <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 flex flex-col items-center justify-center p-6">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-8 max-w-md w-full text-center shadow-lg space-y-4">
+          <FileText className="w-12 h-12 text-maroon-800 dark:text-rose-400 mx-auto" />
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Loading Document...</h2>
+          <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">Preparing multimodal OCR ledger and forensic analysis.</p>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+            className="px-5 py-2.5 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-maroon-900/30"
           >
             Return to Dashboard
           </button>
@@ -192,16 +193,16 @@ export default function InspectorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-6 px-4 sm:px-6 lg:px-8 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 py-6 px-4 sm:px-6 lg:px-8 selection:bg-maroon-800 selection:text-white transition-colors duration-200">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Navigation & Action Top Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors shadow-xs cursor-pointer"
+              className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
               title="Return to Workspace"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -209,19 +210,19 @@ export default function InspectorPage() {
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 tracking-tight font-sans">
+                <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight font-sans">
                   Document Inspector &amp; Ledger
                 </h1>
-                <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-100 border border-slate-200 text-slate-700 font-bold">
+                <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 font-bold">
                   {doc.id}
                 </span>
                 {doc.reconciled && (
-                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold">
                     Reconciled &amp; Approved
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500 font-mono mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono mt-0.5">
                 {doc.name} · {doc.engine} · Extracted: {doc.timestamp}
               </p>
             </div>
@@ -232,7 +233,7 @@ export default function InspectorPage() {
             <button
               type="button"
               onClick={() => navigate('/support')}
-              className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-mono text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-maroon-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-mono text-maroon-800 dark:text-rose-400 hover:text-maroon-900 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
             >
               <Bot className="w-3.5 h-3.5" />
               <span>Ask AI Bot</span>
@@ -242,7 +243,7 @@ export default function InspectorPage() {
               <button
                 type="button"
                 onClick={handleSaveLedger}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-blue-600/30 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white text-xs font-bold font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-maroon-900/30 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Changes</span>
@@ -252,18 +253,18 @@ export default function InspectorPage() {
             <button
               type="button"
               onClick={handleExportCSV}
-              className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5 text-blue-600" />
+              <Download className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
               <span>Export CSV</span>
             </button>
 
             <button
               type="button"
               onClick={handleExportJSON}
-              className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <FileText className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
               <span>Audit JSON</span>
             </button>
 
@@ -285,31 +286,31 @@ export default function InspectorPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Panel: Uploaded Document Preview (5 cols) */}
-          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4 lg:sticky lg:top-24">
+          <div className="lg:col-span-5 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm space-y-4 lg:sticky lg:top-24">
             
-            <div className="flex items-center justify-between text-xs font-mono text-slate-500 border-b border-slate-100 pb-3">
-              <span className="flex items-center gap-2 font-bold text-slate-800">
-                <FileText className="w-4 h-4 text-blue-600" />
+            <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-zinc-400 border-b border-slate-100 dark:border-zinc-800 pb-3">
+              <span className="flex items-center gap-2 font-bold text-slate-800 dark:text-zinc-200">
+                <FileText className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
                 INGESTED DOCUMENT PREVIEW
               </span>
-              <span className="text-[10px] text-slate-400 uppercase font-bold">{doc.fileSize}</span>
+              <span className="text-[10px] text-slate-400 dark:text-zinc-500 uppercase font-bold">{doc.fileSize}</span>
             </div>
 
             {/* Document Visual Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 font-mono text-xs text-slate-800 space-y-4 relative overflow-hidden shadow-xs">
+            <div className="bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl p-5 font-mono text-xs text-slate-800 dark:text-zinc-200 space-y-4 relative overflow-hidden shadow-xs">
               
               {/* Paper Header */}
-              <div className="border-b border-slate-200 pb-3 space-y-1">
+              <div className="border-b border-slate-200 dark:border-zinc-800 pb-3 space-y-1">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-sm">{vendor}</h3>
-                    <p className="text-[11px] text-slate-500">{gstin}</p>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">{vendor}</h3>
+                    <p className="text-[11px] text-slate-500 dark:text-zinc-400">{gstin}</p>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded text-[10px] bg-white text-slate-700 border border-slate-200 font-bold shadow-xs">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700 font-bold shadow-xs">
                     TAX INVOICE
                   </span>
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-500 pt-2">
+                <div className="flex justify-between text-[11px] text-slate-500 dark:text-zinc-400 pt-2">
                   <span>Ref: {invoiceNumber}</span>
                   <span>Date: {invoiceDate}</span>
                 </div>
@@ -317,13 +318,13 @@ export default function InspectorPage() {
 
               {/* Scanned Items Mockup */}
               <div className="space-y-2 pt-1 text-[11px]">
-                <div className="text-slate-400 font-bold uppercase text-[10px]">Recognized Line Items:</div>
+                <div className="text-slate-400 dark:text-zinc-500 font-bold uppercase text-[10px]">Recognized Line Items:</div>
                 {(lineItems || []).map((item, i) => (
-                  <div key={i} className="flex justify-between border-b border-slate-200/60 pb-1.5">
-                    <span className="text-slate-700 truncate max-w-[200px]">
+                  <div key={i} className="flex justify-between border-b border-slate-200/60 dark:border-zinc-800 pb-1.5">
+                    <span className="text-slate-700 dark:text-zinc-300 truncate max-w-[200px]">
                       {item?.quantity || 1}x {item?.description || 'Item'}
                     </span>
-                    <span className="text-slate-900 font-bold">
+                    <span className="text-slate-900 dark:text-white font-bold">
                       ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
@@ -331,24 +332,24 @@ export default function InspectorPage() {
               </div>
 
               {/* Document Footprint */}
-              <div className="border-t border-slate-200 pt-3 space-y-1.5 text-xs">
-                <div className="flex justify-between text-slate-600">
+              <div className="border-t border-slate-200 dark:border-zinc-800 pt-3 space-y-1.5 text-xs">
+                <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                   <span>Subtotal:</span>
                   <span>₹{Number(calculatedSubtotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-slate-600">
+                <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                   <span>GST (18%):</span>
                   <span>₹{Number(taxSum).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
                 
                 {/* Printed Total Row with Forensic Pulsating Highlight if Tampered */}
-                <div className={`flex justify-between font-bold border-t border-slate-200 pt-2 text-sm transition-all ${
+                <div className={`flex justify-between font-bold border-t border-slate-200 dark:border-zinc-800 pt-2 text-sm transition-all ${
                   doc.forensicAnalysis?.tamperingDetected 
-                    ? 'p-2.5 rounded-lg bg-rose-50 border-2 border-rose-500 text-rose-700 forensic-heatmap-pulsate' 
-                    : 'text-amber-700'
+                    ? 'p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 border-2 border-rose-500 text-rose-700 dark:text-rose-300 forensic-heatmap-pulsate' 
+                    : 'text-amber-700 dark:text-amber-400'
                 }`}>
                   <span className="flex items-center gap-1.5">
-                    {doc.forensicAnalysis?.tamperingDetected && <Flame className="w-3.5 h-3.5 text-rose-600 animate-pulse" />}
+                    {doc.forensicAnalysis?.tamperingDetected && <Flame className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 animate-pulse" />}
                     Printed Invoice Total:
                   </span>
                   <span>₹{Number(statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
@@ -359,91 +360,97 @@ export default function InspectorPage() {
             </div>
 
             {/* Document Metadata Details */}
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs font-mono">
-              <div className="flex justify-between text-slate-600">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                 <span>OCR Pipeline:</span>
-                <span className="text-slate-900 font-semibold">Gemini Vision Multimodal API</span>
+                <span className="text-slate-900 dark:text-white font-semibold">Gemini Vision Multimodal API</span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                 <span>Arithmetic Verification:</span>
-                <span className={isBalanced ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}>
+                <span className={isBalanced ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-amber-600 dark:text-amber-400 font-bold'}>
                   {isBalanced ? 'Zero Discrepancy' : `Variance (₹${variance.toFixed(2)})`}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                 <span>Compliance Standard:</span>
-                <span className="text-slate-900 font-semibold">Indian GST Law (CGST / SGST / IGST)</span>
+                <span className="text-slate-900 dark:text-white font-semibold">Indian GST Law (CGST / SGST / IGST)</span>
               </div>
             </div>
 
           </div>
 
           {/* Right Panel: Editable Extracted Fields & Line Items Ledger (7 cols) */}
-          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="lg:col-span-7 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm space-y-6">
             
             {/* Discrepancy Alert or Verification Banner */}
             {!isBalanced ? (
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 space-y-1.5 shadow-xs">
+              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 space-y-1.5 shadow-xs">
                 <div className="flex items-center gap-2 font-bold text-sm">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                   <span>Mathematical Discrepancy Detected: +₹{variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  The stated invoice total (<span className="font-mono text-amber-800 font-bold">₹{statedTotal.toLocaleString('en-IN')}</span>) differs from the computed sum of line items + GST (<span className="font-mono text-emerald-700 font-bold">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>). Edit values below to recalculate.
+                <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed font-sans">
+                  The stated invoice total (<span className="font-mono text-amber-800 dark:text-amber-300 font-bold">₹{statedTotal.toLocaleString('en-IN')}</span>) differs from the computed sum of line items + GST (<span className="font-mono text-emerald-700 dark:text-emerald-400 font-bold">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>). Edit values below to recalculate.
                 </p>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 space-y-1.5 shadow-xs">
+              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 space-y-1.5 shadow-xs">
                 <div className="flex items-center gap-2 font-bold text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>100% Mathematical Parity Verified (₹0.00 Variance)</span>
                 </div>
-                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed font-sans">
                   All line items multiplied by quantity and compounded with applicable GST perfectly reconcile with the stated invoice total.
                 </p>
               </div>
             )}
 
+            {/* Live Interactive Parity Comparison Meter */}
+            <VisualParityBar 
+              statedTotal={statedTotal} 
+              calculatedTotal={calculatedTotal} 
+            />
+
             {/* Editable Invoice Header Fields */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <div className="text-xs font-mono uppercase text-slate-600 font-bold">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800 space-y-3">
+              <div className="text-xs font-mono uppercase text-slate-600 dark:text-zinc-400 font-bold">
                 Header &amp; Entity Identification
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block text-slate-600 font-mono text-[11px] mb-1">Vendor Entity</label>
+                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Vendor Entity</label>
                   <input
                     type="text"
                     value={vendor}
                     onChange={(e) => { setVendor(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 outline-hidden"
+                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-mono text-[11px] mb-1">Vendor GSTIN</label>
+                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Vendor GSTIN</label>
                   <input
                     type="text"
                     value={gstin}
                     onChange={(e) => { setGstin(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-mono outline-hidden"
+                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-mono text-[11px] mb-1">Invoice Number</label>
+                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Invoice Number</label>
                   <input
                     type="text"
                     value={invoiceNumber}
                     onChange={(e) => { setInvoiceNumber(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-mono outline-hidden"
+                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-mono text-[11px] mb-1">Invoice Date</label>
+                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Invoice Date</label>
                   <input
                     type="date"
                     value={invoiceDate}
                     onChange={(e) => { setInvoiceDate(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white border border-slate-200 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-mono outline-hidden"
+                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
                   />
                 </div>
               </div>
@@ -451,14 +458,14 @@ export default function InspectorPage() {
 
             {/* Editable Line Items Table */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono text-slate-600">
-                <span className="font-bold uppercase text-slate-900">Audited Line Items</span>
-                <span className="text-[11px] text-slate-500">Edit quantities or unit rates to test real-time recalculation</span>
+              <div className="flex items-center justify-between text-xs font-mono text-slate-600 dark:text-zinc-400">
+                <span className="font-bold uppercase text-slate-900 dark:text-white">Audited Line Items</span>
+                <span className="text-[11px] text-slate-500 dark:text-zinc-500">Edit quantities or unit rates to test real-time recalculation</span>
               </div>
 
-              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+              <div className="border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900 shadow-xs">
                 <table className="w-full text-left text-xs font-sans">
-                  <thead className="bg-slate-50 text-slate-600 font-mono text-[11px] border-b border-slate-200">
+                  <thead className="bg-slate-50 dark:bg-zinc-950 text-slate-600 dark:text-zinc-400 font-mono text-[11px] border-b border-slate-200 dark:border-zinc-800">
                     <tr>
                       <th className="px-3.5 py-2.5">Item Description</th>
                       <th className="px-2 py-2.5 w-16 text-right">Qty</th>
@@ -467,15 +474,15 @@ export default function InspectorPage() {
                       <th className="px-3.5 py-2.5 text-right w-28">Total (₹)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-mono">
+                  <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/80 font-mono">
                     {(lineItems || []).map((item, idx) => (
-                      <tr key={item?.id || idx} className="hover:bg-slate-50">
+                      <tr key={item?.id || idx} className="hover:bg-slate-50 dark:hover:bg-zinc-800/60">
                         <td className="px-3.5 py-2.5 font-sans">
                           <input
                             type="text"
                             value={item?.description || ''}
                             onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
-                            className="w-full bg-transparent border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1.5 py-1"
+                            className="w-full bg-transparent border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1.5 py-1"
                           />
                         </td>
                         <td className="px-2 py-2 text-right">
@@ -483,7 +490,7 @@ export default function InspectorPage() {
                             type="number"
                             value={item?.quantity ?? 1}
                             onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
                           />
                         </td>
                         <td className="px-2 py-2 text-right">
@@ -491,7 +498,7 @@ export default function InspectorPage() {
                             type="number"
                             value={item?.unitPrice ?? 0}
                             onChange={(e) => handleItemChange(idx, 'unitPrice', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 hover:bg-slate-100 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
                           />
                         </td>
                         <td className="px-2 py-2 text-right">
@@ -499,10 +506,10 @@ export default function InspectorPage() {
                             type="number"
                             value={item?.taxRate ?? 18}
                             onChange={(e) => handleItemChange(idx, 'taxRate', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-700 hover:bg-slate-100 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
                           />
                         </td>
-                        <td className="px-3.5 py-2.5 text-right font-bold text-slate-900">
+                        <td className="px-3.5 py-2.5 text-right font-bold text-slate-900 dark:text-white">
                           ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                       </tr>
@@ -513,22 +520,22 @@ export default function InspectorPage() {
             </div>
 
             {/* Reconciliation Totals Breakdown */}
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs font-mono">
-              <div className="flex justify-between text-slate-600">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                 <span>Calculated Line Items Subtotal:</span>
-                <span className="font-bold text-slate-900">₹{calculatedSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="font-bold text-slate-900 dark:text-white">₹{calculatedSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
                 <span>GST Tax Sum (18%):</span>
-                <span className="text-slate-900">₹{taxSum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="text-slate-900 dark:text-white">₹{taxSum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-slate-800 font-bold border-t border-slate-200 pt-2 text-sm">
+              <div className="flex justify-between text-slate-800 dark:text-zinc-200 font-bold border-t border-slate-200 dark:border-zinc-800 pt-2 text-sm">
                 <span>Calculated Payable:</span>
-                <span className="text-emerald-600">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="text-emerald-600 dark:text-emerald-400">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between font-bold text-sm">
-                <span className="text-slate-700">Printed Invoice Total:</span>
-                <span className={isBalanced ? 'text-emerald-600' : 'text-amber-600'}>
+                <span className="text-slate-700 dark:text-zinc-300">Printed Invoice Total:</span>
+                <span className={isBalanced ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
                   ₹{Number(statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               </div>
@@ -542,7 +549,7 @@ export default function InspectorPage() {
 
       {/* Floating Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-slate-900 text-white text-xs font-mono shadow-2xl flex items-center gap-2">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-maroon-950 text-white border border-maroon-800 text-xs font-mono shadow-2xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{toastMsg}</span>
         </div>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import TopUtilityBar from './components/TopUtilityBar';
 import Navbar from './components/Navbar';
 import LeftSlidebar from './components/LeftSlidebar';
 import LandingPage from './pages/LandingPage';
@@ -26,16 +25,14 @@ export default function App() {
         <AuthProvider>
           <DocumentProvider>
             <BrowserRouter>
-              <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
+              <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-maroon-800 selection:text-white transition-colors duration-200">
                 
-                {/* 1. First Bar: Top Utility Bar (Black & White macOS Apple style with Traffic Lights, Language, Contact Us, Support, My Account, Profile Dashboard) */}
-                <TopUtilityBar />
-
-                {/* 2. Second Bar: Horizontal Dashboard Navbar (macOS Dock styling with Left Slidebar Toggle, Pills, Dynamic Scroll Logo, Dark/Light Mode Switch) */}
+                {/* Single Sleek Top Bar (Account Settings, Login/Sign Up info, Left Menu Trigger & Dark/Light Mode) */}
                 <Navbar onToggleSidebar={() => setSidebarOpen(prev => !prev)} />
 
-                {/* 3. Left Slidebar (macOS Finder-style glass slidebar drawer) */}
+                {/* Left Slidebar containing all navigation views, tools, language, and contact */}
                 <LeftSlidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+
 
                 {/* Dynamic Multi-Page Router */}
                 <div className="flex-1">
