@@ -6,99 +6,192 @@ const STORAGE_KEY = 'discrepiq_audit_documents';
 
 const INITIAL_DOCS = [
   {
-    id: 'doc-freight-mismatch',
-    name: 'Freight_Logistics_Tax_Invoice_0941.pdf',
+    id: 'test-1-coffee',
+    name: 'Blue_Tokai_Coffee_Receipt.pdf',
+    presetLabel: 'Test 1: Valid Coffee Receipt (Clean)',
+    vendor: 'Blue Tokai Coffee Roasters',
+    gstin: 'GSTIN-07AAACB1294F1Z8',
+    invoiceNumber: 'BT-DL-8821',
+    invoiceDate: '2026-09-29',
+    dueDate: '2026-09-29',
+    currency: 'INR',
+    subtotal: 1610.00,
+    taxTotal: 80.50,
+    statedTotal: 1690.50,
+    calculatedTotal: 1690.50,
+    discrepancy: 0.00,
+    status: 'verified',
+    reconciled: true,
+    timestamp: '2026-09-29 09:30 AM',
+    fileSize: '185 KB',
+    engine: 'Gemini 3.5 Flash',
+    complianceReport: {
+      status: 'COMPLIANT',
+      violations: []
+    },
+    forensicAnalysis: {
+      integrityScore: 98,
+      riskLevel: 'LOW',
+      tamperingDetected: false,
+      anomalies: []
+    },
+    lineItems: [
+      { id: 'item-1', description: 'Specialty Roasted Espresso Beans (500g)', quantity: 1, unitPrice: 750.00, taxRate: 5, total: 750.00 },
+      { id: 'item-2', description: 'Cold Brew Roast Bottle (Pack of 2)', quantity: 1, unitPrice: 420.00, taxRate: 5, total: 420.00 },
+      { id: 'item-3', description: 'Artisanal Butter Almond Croissant', quantity: 2, unitPrice: 220.00, taxRate: 5, total: 440.00 }
+    ],
+    taxBreakdown: { cgst: 40.25, sgst: 40.25, igst: 0.00 },
+    notes: 'Clean receipt for corporate breakfast. Zero mathematical variance and 100% PolicyGuard compliant.'
+  },
+  {
+    id: 'test-2-alcohol',
+    name: 'The_Oberoi_SkyLounge_Bill.pdf',
+    presetLabel: 'Test 2: Restaurant Bill (Alcohol Violation Caught)',
+    vendor: 'The Oberoi Sky Lounge & Bar',
+    gstin: 'GSTIN-27AAATB4912J1ZR',
+    invoiceNumber: 'OBR-MUM-491',
+    invoiceDate: '2026-09-27', // Sunday
+    dueDate: '2026-09-27',
+    currency: 'INR',
+    subtotal: 9610.00,
+    taxTotal: 1729.80,
+    statedTotal: 11339.80,
+    calculatedTotal: 11339.80,
+    discrepancy: 0.00,
+    status: 'flagged_compliance',
+    reconciled: false,
+    timestamp: '2026-09-27 10:45 PM',
+    fileSize: '320 KB',
+    engine: 'Gemini 3.5 Flash',
+    complianceReport: {
+      status: 'FLAGGED',
+      violations: [
+        {
+          rule: 'ALCOHOL_RESTRICTION',
+          item: 'Glenfiddich 18yr Single Malt Scotch Whisky',
+          reason: 'Restricted beverage/substance ("WHISKY") detected. Corporate expense policy strictly prohibits alcohol reimbursement.'
+        },
+        {
+          rule: 'PER_DIEM_CAP',
+          item: 'Glenfiddich 18yr Single Malt Scotch Whisky',
+          reason: 'Single item cost (₹4,800.00) exceeds corporate per-diem cap of ₹4,000 ($50 USD equivalent). Requires VP exception authorization.'
+        },
+        {
+          rule: 'WEEKEND_EXPENSE',
+          item: 'Transaction Date: 2026-09-27',
+          reason: 'Expense was incurred on a weekend (Sunday). Weekend business dining requires pre-approved client project code.'
+        }
+      ]
+    },
+    forensicAnalysis: {
+      integrityScore: 94,
+      riskLevel: 'LOW',
+      tamperingDetected: false,
+      anomalies: []
+    },
+    lineItems: [
+      { id: 'item-1', description: 'Wild Mushroom & Truffle Risotto', quantity: 1, unitPrice: 1650.00, taxRate: 18, total: 1650.00 },
+      { id: 'item-2', description: 'Norwegian Grilled Salmon Fillet', quantity: 1, unitPrice: 2400.00, taxRate: 18, total: 2400.00 },
+      { id: 'item-3', description: 'Glenfiddich 18yr Single Malt Scotch Whisky', quantity: 1, unitPrice: 4800.00, taxRate: 18, total: 4800.00 },
+      { id: 'item-4', description: 'San Pellegrino Sparkling Water (750ml)', quantity: 2, unitPrice: 380.00, taxRate: 18, total: 760.00 }
+    ],
+    taxBreakdown: { cgst: 864.90, sgst: 864.90, igst: 0.00 },
+    notes: 'PolicyGuard Warning: 3 compliance infractions detected including prohibited liquor and weekend non-business hours.'
+  },
+  {
+    id: 'test-3-contractor',
+    name: 'Apex_Contractor_Tech_Services.pdf',
+    presetLabel: 'Test 3: Contractor Invoice (Math Discrepancy Caught)',
+    vendor: 'Apex Engineering & Cloud Contractors Pvt Ltd',
+    gstin: 'GSTIN-29AAACE4910M1ZU',
+    invoiceNumber: 'APX-2026-884',
+    invoiceDate: '2026-09-22',
+    dueDate: '2026-10-22',
+    currency: 'INR',
+    subtotal: 170000.00,
+    taxTotal: 30600.00,
+    statedTotal: 218000.00, // Should be 200600
+    calculatedTotal: 200600.00,
+    discrepancy: 17400.00,
+    status: 'discrepancy',
+    reconciled: false,
+    timestamp: '2026-09-22 02:15 PM',
+    fileSize: '410 KB',
+    engine: 'Gemini 3.5 Flash',
+    complianceReport: {
+      status: 'COMPLIANT',
+      violations: []
+    },
+    forensicAnalysis: {
+      integrityScore: 91,
+      riskLevel: 'LOW',
+      tamperingDetected: false,
+      anomalies: []
+    },
+    lineItems: [
+      { id: 'item-1', description: 'Lead Cloud Infrastructure Architect (40 Hours)', quantity: 40, unitPrice: 2500.00, taxRate: 18, total: 100000.00 },
+      { id: 'item-2', description: 'Kubernetes Zero-Trust Security Hardening', quantity: 1, unitPrice: 45000.00, taxRate: 18, total: 45000.00 },
+      { id: 'item-3', description: 'CI/CD Production Deployment Pipeline', quantity: 1, unitPrice: 25000.00, taxRate: 18, total: 25000.00 }
+    ],
+    taxBreakdown: { cgst: 0.00, sgst: 0.00, igst: 30600.00 },
+    notes: 'Math Discrepancy: Subtotal (₹1,70,000) + 18% GST (₹30,600) = ₹2,00,600.00, but invoice billed ₹2,18,000.00 (Overbilled by ₹17,400.00).'
+  },
+  {
+    id: 'demo-4-tampering',
+    name: 'Altered_Vendor_Invoice_Forged.pdf',
+    presetLabel: 'Demo 4: Altered Invoice (Tampering Caught)',
     vendor: 'Global Freight Logistics India Pvt Ltd',
     gstin: 'GSTIN-27AAACG0561D1ZW',
-    invoiceNumber: 'INV-2026-0941',
-    invoiceDate: '2026-10-01',
-    dueDate: '2026-10-15',
+    invoiceNumber: 'INV-2026-FORGED',
+    invoiceDate: '2026-09-18',
+    dueDate: '2026-10-18',
     currency: 'INR',
     subtotal: 117000.00,
     taxTotal: 21060.00,
-    statedTotal: 145000.00,
+    statedTotal: 345000.00, // Digit '3' spliced over '1'
     calculatedTotal: 138060.00,
-    discrepancy: 6940.00,
-    status: 'discrepancy', // 'discrepancy' | 'verified'
+    discrepancy: 206940.00,
+    status: 'tampered',
     reconciled: false,
-    timestamp: '2026-10-01 10:48 AM',
-    fileSize: '412 KB',
+    timestamp: '2026-09-18 11:10 AM',
+    fileSize: '512 KB',
     engine: 'Gemini 3.5 Flash',
-    lineItems: [
-      { id: 'item-1', description: 'Air Freight Dedicated Container Mumbai-Delhi', quantity: 2, unitPrice: 45000.00, taxRate: 18, total: 90000.00 },
-      { id: 'item-2', description: 'Priority Customs Clearance & Documentation Handling', quantity: 1, unitPrice: 15000.00, taxRate: 18, total: 15000.00 },
-      { id: 'item-3', description: 'Cold Chain Pharma Express Storage Surcharge', quantity: 1, unitPrice: 12000.00, taxRate: 18, total: 12000.00 }
-    ],
-    taxBreakdown: {
-      cgst: 10530.00,
-      sgst: 10530.00,
-      igst: 0.00
+    complianceReport: {
+      status: 'COMPLIANT',
+      violations: []
     },
-    notes: 'Line item sum (₹1,17,000) + 18% GST (₹21,060) equals ₹1,38,060. Vendor stated ₹1,45,000, creating an unjustified overbilling variance of ₹6,940.00.'
-  },
-  {
-    id: 'doc-cloud-reconciled',
-    name: 'Apex_Cloud_Infrastructure_Monthly.pdf',
-    vendor: 'Apex Cloud Technologies India Pvt Ltd',
-    gstin: 'GSTIN-29AABCU9603R1ZM',
-    invoiceNumber: 'APX-IND-8820',
-    invoiceDate: '2026-10-01',
-    dueDate: '2026-10-31',
-    currency: 'INR',
-    subtotal: 255000.00,
-    taxTotal: 45900.00,
-    statedTotal: 300900.00,
-    calculatedTotal: 300900.00,
-    discrepancy: 0.00,
-    status: 'verified',
-    reconciled: true,
-    timestamp: '2026-10-01 09:15 AM',
-    fileSize: '298 KB',
-    engine: 'Gemini 3.5 Flash',
-    lineItems: [
-      { id: 'item-1', description: 'Kubernetes Dedicated Enterprise Worker Nodes (4x)', quantity: 4, unitPrice: 45000.00, taxRate: 18, total: 180000.00 },
-      { id: 'item-2', description: 'High-Throughput NVMe Object Storage Volume (50TB)', quantity: 1, unitPrice: 55000.00, taxRate: 18, total: 55000.00 },
-      { id: 'item-3', description: 'Virtual Private Cloud Multi-AZ NAT Gateways', quantity: 2, unitPrice: 10000.00, taxRate: 18, total: 20000.00 }
-    ],
-    taxBreakdown: {
-      cgst: 0.00,
-      sgst: 0.00,
-      igst: 45900.00
+    forensicAnalysis: {
+      integrityScore: 32,
+      riskLevel: 'HIGH',
+      tamperingDetected: true,
+      anomalies: [
+        {
+          type: 'FONT_MISMATCH',
+          targetArea: 'Grand Total Box (Row 14, Col 4)',
+          description: 'Font rasterization mismatch: Numeric glyph "3" has 1.8x pixel edge sharpness compared to adjacent OCR text.'
+        },
+        {
+          type: 'PIXEL_ARTIFACT',
+          targetArea: 'Invoice Total Bounding Rectangle',
+          description: 'JPEG double-compression ghosts detected around stated total. Luminance gradient discontinuities confirm pixel splicing.'
+        },
+        {
+          type: 'SUSPICIOUS_ALIGNMENT',
+          targetArea: 'Currency Symbol Baseline',
+          description: 'Currency prefix baseline sits 4.2 pixels lower than the numeric string, indicating digital text box insertion.'
+        }
+      ]
     },
-    notes: 'Mathematical parity verified. Line items sum perfectly to ₹2,55,000.00 and 18% IGST ₹45,900.00 matches stated total ₹3,00,900.00.'
-  },
-  {
-    id: 'doc-receipt-reconciled',
-    name: 'TechMart_Workstation_Receipt.jpg',
-    vendor: 'TechMart Electronics India Pvt Ltd',
-    gstin: 'GSTIN-07AABCT3421K1ZZ',
-    invoiceNumber: 'TM-DEL-44120',
-    invoiceDate: '2026-09-30',
-    dueDate: '2026-09-30',
-    currency: 'INR',
-    subtotal: 77999.00,
-    taxTotal: 14039.82,
-    statedTotal: 92038.82,
-    calculatedTotal: 92038.82,
-    discrepancy: 0.00,
-    status: 'verified',
-    reconciled: true,
-    timestamp: '2026-09-30 04:30 PM',
-    fileSize: '1.2 MB',
-    engine: 'Gemini 3.5 Flash',
     lineItems: [
-      { id: 'item-1', description: 'Dell UltraSharp 27" 4K IPS USB-C Monitor', quantity: 2, unitPrice: 28500.00, taxRate: 18, total: 57000.00 },
-      { id: 'item-2', description: 'Logitech MX Master 3S Wireless Ergonomic Mouse', quantity: 2, unitPrice: 7999.00, taxRate: 18, total: 15998.00 },
-      { id: 'item-3', description: 'Anker Prime 100W GaN Wall Charging Station', quantity: 1, unitPrice: 5001.00, taxRate: 18, total: 5001.00 }
+      { id: 'item-1', description: 'Air Freight Domestic Cargo Container (2x)', quantity: 2, unitPrice: 45000.00, taxRate: 18, total: 90000.00 },
+      { id: 'item-2', description: 'Priority Customs Handling & Documentation', quantity: 1, unitPrice: 15000.00, taxRate: 18, total: 15000.00 },
+      { id: 'item-3', description: 'Cold Chain Pharma Express Storage', quantity: 1, unitPrice: 12000.00, taxRate: 18, total: 12000.00 }
     ],
-    taxBreakdown: {
-      cgst: 7019.91,
-      sgst: 7019.91,
-      igst: 0.00
-    },
-    notes: 'Store POS receipt extracted cleanly from mobile camera capture. Zero arithmetic variance.'
+    taxBreakdown: { cgst: 10530.00, sgst: 10530.00, igst: 0.00 },
+    notes: '🚨 Tampering Alert: Visual Inconsistencies Detected in Grand Total. Digit alteration and JPEG pixel splicing verified by TamperShield.'
   }
 ];
+
 
 export function DocumentProvider({ children }) {
   const [documents, setDocuments] = useState(() => {

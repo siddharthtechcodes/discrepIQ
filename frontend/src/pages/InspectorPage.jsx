@@ -19,9 +19,12 @@ import {
   Check,
   RotateCcw,
   Sparkles,
-  Bot
+  Bot,
+  Flame,
+  ShieldAlert
 } from 'lucide-react';
 import { useDocuments } from '../context/DocumentContext';
+import ExtractedDataViewer from '../components/ExtractedDataViewer';
 
 export default function InspectorPage() {
   const { id } = useParams();
@@ -250,6 +253,9 @@ export default function InspectorPage() {
           </div>
         </div>
 
+        {/* PolicyGuard Compliance Shield & TamperShield AI Forensics Card */}
+        <ExtractedDataViewer document={doc} />
+
         {/* Side-by-Side Comparison Workspace */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
@@ -309,10 +315,18 @@ export default function InspectorPage() {
                   <span>GST (18%):</span>
                   <span>₹{Number(taxSum).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-amber-400 font-bold border-t border-slate-800 pt-2 text-sm">
-                  <span>Printed Invoice Total:</span>
+                <div className={`flex justify-between font-bold border-t border-slate-800 pt-2 text-sm transition-all ${
+                  doc.forensicAnalysis?.tamperingDetected 
+                    ? 'p-2 rounded bg-rose-950/40 text-rose-300 forensic-heatmap-pulsate' 
+                    : 'text-amber-400'
+                }`}>
+                  <span className="flex items-center gap-1.5">
+                    {doc.forensicAnalysis?.tamperingDetected && <Flame className="w-3.5 h-3.5 text-rose-500 animate-pulse" />}
+                    Printed Invoice Total:
+                  </span>
                   <span>₹{Number(statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
+
               </div>
 
             </div>

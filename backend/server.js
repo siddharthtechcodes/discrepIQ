@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { auditCompliance, auditTampering, EXTRACTION_PROMPT as FORENSIC_EXTRACTION_PROMPT } from './src/services/geminiService.js';
 
 dotenv.config();
 
@@ -203,11 +204,17 @@ function getDemoExtraction(fileName) {
       isValid: true,
       notes: "Verified: Line items sum (₹255,000.00) + 18% GST (₹45,900.00) reconciles with Total (₹300,900.00)."
     },
+    complianceReport: {
+      status: "COMPLIANT",
+      violations: []
+    },
+    forensicAnalysis: auditTampering({}, fileName),
     summary: `Extracted from ${fileName}: Apex Cloud Technologies India invoice for enterprise cloud infrastructure and AI compute totaling ₹3,00,900.00 INR (including 18% GST).`,
     isDemoMode: true,
-    demoMessage: "GEMINI_API_KEY is not configured in backend/.env. Running with demo processing pipeline so you can test the UI immediately. Set your GEMINI_API_KEY to switch to live Gemini extraction."
+    demoMessage: "Demo processing pipeline active with PolicyGuard compliance and TamperShield forensic audits."
   };
 }
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -350,52 +357,163 @@ Always be concise, precise, professional, and helpful. Use Indian Rupee (₹) fo
   }
 });
 
-// Sample documents endpoint
+// Sample documents endpoint with 4 Judge Demo Presets
 app.get('/api/documents/samples', (req, res) => {
   const samples = [
     {
-      id: 'cloud-invoice',
-      name: 'Apex Cloud India Invoice.pdf',
-      type: 'Invoice (18% GST)',
-      data: getDemoExtraction('Apex_Cloud_India_Invoice.pdf')
-    },
-    {
-      id: 'hardware-receipt',
-      name: 'TechMart Store Receipt.png',
-      type: 'Receipt (Retail)',
+      id: 'test-1-coffee',
+      name: 'Blue_Tokai_Coffee_Receipt.pdf',
+      label: 'Test 1: Valid Coffee Receipt (Clean)',
+      type: 'Receipt (Clean & Policy Approved)',
       data: {
         documentType: "Receipt",
         vendor: {
-          name: "TechMart Electronics India Pvt Ltd",
-          taxId: "GSTIN-07AABCT3421K1ZZ",
-          address: "Connaught Place, Inner Circle, New Delhi 110001"
+          name: "Blue Tokai Coffee Roasters",
+          taxId: "GSTIN-07AAACB1294F1Z8",
+          address: "Khan Market, Rabindra Nagar, New Delhi, Delhi 110003"
         },
         dates: {
-          invoiceDate: "2026-09-28",
-          dueDate: "2026-09-28"
+          invoiceDate: "2026-09-29",
+          dueDate: "2026-09-29"
         },
         currency: "INR",
         lineItems: [
-          { description: "4K Ultra-Wide Monitor 34-inch", quantity: 1, unitPrice: 49999.00, amount: 49999.00 },
-          { description: "Ergonomic Mechanical Keyboard", quantity: 1, unitPrice: 12499.00, amount: 12499.00 },
-          { description: "USB-C Dual 4K Display Dock", quantity: 1, unitPrice: 15500.00, amount: 15500.00 }
+          { description: "Specialty Roasted Espresso Beans (500g)", quantity: 1, unitPrice: 750.00, amount: 750.00 },
+          { description: "Cold Brew Roast Bottle (Pack of 2)", quantity: 1, unitPrice: 420.00, amount: 420.00 },
+          { description: "Artisanal Butter Almond Croissant", quantity: 2, unitPrice: 220.00, amount: 440.00 }
         ],
         financials: {
-          subtotal: 77998.00,
-          taxAmount: 14039.64, // 18% GST
-          totalAmount: 92037.64
+          subtotal: 1610.00,
+          taxAmount: 80.50, // 5% GST
+          totalAmount: 1690.50
         },
         mathValidation: {
           isValid: true,
-          notes: "Verified: Line items sum (₹77,998.00) + 18% GST (₹14,039.64) reconciles with Total (₹92,037.64)."
+          notes: "Verified: Line items sum (₹1,610.00) + 5% GST (₹80.50) reconciles perfectly with Total (₹1,690.50)."
         },
-        summary: "In-store receipt from TechMart Electronics India for developer workstation peripherals totaling ₹92,037.64 INR."
+        complianceReport: {
+          status: "COMPLIANT",
+          violations: []
+        },
+        forensicAnalysis: {
+          integrityScore: 98,
+          riskLevel: "LOW",
+          tamperingDetected: false,
+          anomalies: []
+        },
+        summary: "Clean retail coffee expense for internal business meeting. Fully compliant with corporate policy and zero arithmetic discrepancy."
       }
     },
     {
-      id: 'mismatch-invoice',
-      name: 'Audit Discrepancy Invoice.pdf',
-      type: 'Invoice (Math Discrepancy)',
+      id: 'test-2-alcohol',
+      name: 'The_Oberoi_SkyLounge_Bill.pdf',
+      label: 'Test 2: Restaurant Bill (Alcohol Violation Caught)',
+      type: 'Receipt (Policy Violations Caught)',
+      data: {
+        documentType: "Receipt",
+        vendor: {
+          name: "The Oberoi Sky Lounge & Bar",
+          taxId: "GSTIN-27AAATB4912J1ZR",
+          address: "Nariman Point, Marine Drive, Mumbai, Maharashtra 400021"
+        },
+        dates: {
+          invoiceDate: "2026-09-27", // Sunday - weekend violation!
+          dueDate: "2026-09-27"
+        },
+        currency: "INR",
+        lineItems: [
+          { description: "Wild Mushroom & Truffle Risotto", quantity: 1, unitPrice: 1650.00, amount: 1650.00 },
+          { description: "Norwegian Grilled Salmon Fillet", quantity: 1, unitPrice: 2400.00, amount: 2400.00 },
+          { description: "Glenfiddich 18yr Single Malt Scotch Whisky", quantity: 1, unitPrice: 4800.00, amount: 4800.00 },
+          { description: "San Pellegrino Sparkling Water (750ml)", quantity: 2, unitPrice: 380.00, amount: 760.00 }
+        ],
+        financials: {
+          subtotal: 9610.00,
+          taxAmount: 1729.80, // 18% luxury GST
+          totalAmount: 11339.80
+        },
+        mathValidation: {
+          isValid: true,
+          notes: "Verified: Line items sum (₹9,610.00) + 18% GST (₹1,729.80) reconciles with Total (₹11,339.80)."
+        },
+        complianceReport: {
+          status: "FLAGGED",
+          violations: [
+            {
+              rule: "ALCOHOL_RESTRICTION",
+              item: "Glenfiddich 18yr Single Malt Scotch Whisky",
+              reason: 'Restricted beverage/substance ("WHISKY") detected. Corporate expense policy strictly prohibits alcohol reimbursement.'
+            },
+            {
+              rule: "PER_DIEM_CAP",
+              item: "Glenfiddich 18yr Single Malt Scotch Whisky",
+              reason: "Single item cost (₹4,800.00) exceeds corporate per-diem cap of ₹4,000 ($50 USD equivalent). Requires VP exception authorization."
+            },
+            {
+              rule: "WEEKEND_EXPENSE",
+              item: "Transaction Date: 2026-09-27",
+              reason: "Expense was incurred on a weekend (Sunday). Weekend business dining requires pre-approved client project code."
+            }
+          ]
+        },
+        forensicAnalysis: {
+          integrityScore: 94,
+          riskLevel: "LOW",
+          tamperingDetected: false,
+          anomalies: []
+        },
+        summary: "Flagged expense: High-end dining bill containing prohibited alcoholic beverages, per-diem cap overages, and weekend transaction dates."
+      }
+    },
+    {
+      id: 'test-3-contractor',
+      name: 'Apex_Contractor_Tech_Services.pdf',
+      label: 'Test 3: Contractor Invoice (Math Discrepancy Caught)',
+      type: 'Invoice (Math Discrepancy Caught)',
+      data: {
+        documentType: "Invoice",
+        vendor: {
+          name: "Apex Engineering & Cloud Contractors Pvt Ltd",
+          taxId: "GSTIN-29AAACE4910M1ZU",
+          address: "Outer Ring Road, Bellandur, Bengaluru, Karnataka 560103"
+        },
+        dates: {
+          invoiceDate: "2026-09-22",
+          dueDate: "2026-10-22"
+        },
+        currency: "INR",
+        lineItems: [
+          { description: "Lead Cloud Infrastructure Architect (40 Hours)", quantity: 40, unitPrice: 2500.00, amount: 100000.00 },
+          { description: "Kubernetes Zero-Trust Security Hardening", quantity: 1, unitPrice: 45000.00, amount: 45000.00 },
+          { description: "CI/CD Production Deployment Pipeline", quantity: 1, unitPrice: 25000.00, amount: 25000.00 }
+        ],
+        financials: {
+          subtotal: 170000.00,
+          taxAmount: 30600.00, // 18% GST
+          totalAmount: 218000.00 // Intentionally ₹2,18,000 instead of ₹2,00,600!
+        },
+        mathValidation: {
+          isValid: false,
+          notes: "Discrepancy detected: Subtotal (₹1,70,000.00) + 18% GST (₹30,600.00) = ₹2,00,600.00, but billed Total is ₹2,18,000.00 (Overcharge of ₹17,400.00)."
+        },
+        complianceReport: {
+          status: "COMPLIANT",
+          violations: []
+        },
+        forensicAnalysis: {
+          integrityScore: 91,
+          riskLevel: "LOW",
+          tamperingDetected: false,
+          anomalies: []
+        },
+        summary: "Vendor overbilling detected: Stated total exceeds verified sum of line items + 18% GST by ₹17,400.00."
+      }
+    },
+    {
+      id: 'demo-4-tampering',
+      name: 'Altered_Vendor_Invoice_Forged.pdf',
+      label: 'Demo 4: Altered Invoice (Tampering Caught)',
+      type: 'Invoice (Forensic Forgery Detected)',
       data: {
         documentType: "Invoice",
         vendor: {
@@ -404,30 +522,57 @@ app.get('/api/documents/samples', (req, res) => {
           address: "Andheri East Logistics Park, Mumbai, Maharashtra 400069"
         },
         dates: {
-          invoiceDate: "2026-09-10",
-          dueDate: "2026-10-10"
+          invoiceDate: "2026-09-18",
+          dueDate: "2026-10-18"
         },
         currency: "INR",
         lineItems: [
-          { description: "Air Cargo Expedited Domestic Shipping", quantity: 2, unitPrice: 42000.00, amount: 84000.00 },
-          { description: "Customs Clearance & Border Tariff Handling", quantity: 1, unitPrice: 15000.00, amount: 15000.00 },
-          { description: "Temperature-Controlled Storage (3 Days)", quantity: 3, unitPrice: 6000.00, amount: 18000.00 }
+          { description: "Air Freight Domestic Cargo Container (2x)", quantity: 2, unitPrice: 45000.00, amount: 90000.00 },
+          { description: "Priority Customs Handling & Documentation", quantity: 1, unitPrice: 15000.00, amount: 15000.00 },
+          { description: "Cold Chain Pharma Express Storage", quantity: 1, unitPrice: 12000.00, amount: 12000.00 }
         ],
         financials: {
           subtotal: 117000.00,
           taxAmount: 21060.00,
-          totalAmount: 145000.00 // Intentionally 145000 instead of 138060 to trigger discrepancy warning!
+          totalAmount: 345000.00 // Altered from 145000 to 345000!
         },
         mathValidation: {
           isValid: false,
-          notes: "Discrepancy detected: Subtotal (₹1,17,000.00) + 18% GST (₹21,060.00) = ₹1,38,060.00, but billed Total is ₹1,45,000.00 (Overbilled by ₹6,940.00)."
+          notes: "Severe Discrepancy: Calculated sum is ₹1,38,060.00, but document states ₹3,45,000.00 (Variance: ₹2,06,940.00)."
         },
-        summary: "Logistics freight invoice with arithmetic discrepancy between line items + GST (₹1,38,060.00) and billed Total (₹1,45,000.00)."
+        complianceReport: {
+          status: "COMPLIANT",
+          violations: []
+        },
+        forensicAnalysis: {
+          integrityScore: 32,
+          riskLevel: "HIGH",
+          tamperingDetected: true,
+          anomalies: [
+            {
+              type: "FONT_MISMATCH",
+              targetArea: "Grand Total Box (Row 14, Col 4)",
+              description: "Font rasterization mismatch: Numeric glyph '3' has 1.8x pixel edge sharpness compared to adjacent OCR text."
+            },
+            {
+              type: "PIXEL_ARTIFACT",
+              targetArea: "Invoice Total Bounding Rectangle",
+              description: "JPEG double-compression ghosts detected around stated total. Luminance gradient discontinuities confirm pixel splicing."
+            },
+            {
+              type: "SUSPICIOUS_ALIGNMENT",
+              targetArea: "Currency Symbol Baseline",
+              description: "Currency prefix baseline sits 4.2 pixels lower than the numeric string, indicating digital text box insertion."
+            }
+          ]
+        },
+        summary: "CRITICAL FORGERY ALERT: TamperShield detected visual and typographic anomalies in Grand Total. Document integrity score 32/100 (HIGH RISK)."
       }
     }
   ];
   res.json({ samples });
 });
+
 
 // Primary Endpoint: POST /api/documents/process
 app.post('/api/documents/process', (req, res, next) => {
@@ -561,6 +706,16 @@ app.post('/api/documents/process', (req, res, next) => {
         parsedData.mathValidation.isValid = false;
         parsedData.mathValidation.notes = reconciliation.notes;
       }
+    }
+
+    // 1. PolicyGuard Corporate Compliance Audit
+    if (!parsedData.complianceReport || !parsedData.complianceReport.violations) {
+      parsedData.complianceReport = auditCompliance(parsedData);
+    }
+
+    // 2. TamperShield Document Forgery & Manipulation Detection
+    if (!parsedData.forensicAnalysis || !parsedData.forensicAnalysis.integrityScore) {
+      parsedData.forensicAnalysis = auditTampering(parsedData, file.originalname);
     }
 
     return res.json({

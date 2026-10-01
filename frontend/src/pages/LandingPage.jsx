@@ -122,84 +122,123 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0b1329] text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
       
-      {/* Hero Section */}
-      <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8 border-b border-[#1e2e54] overflow-hidden bg-executive-grid">
+      {/* Hero Section in Exact VISTA.IO Aesthetic */}
+      <section className="relative min-h-[85vh] flex items-center px-4 sm:px-8 lg:px-16 border-b border-white/10 overflow-hidden bg-[#080d1a]">
         
-        {/* Soft Radial Ambient Aura */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none"></div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
+        {/* Cinematic Particle Background & Ambient Lighting */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 right-1/4 w-[600px] h-[500px] bg-sky-500/10 blur-[150px] rounded-full"></div>
+          <div className="absolute bottom-10 left-10 w-[400px] h-[300px] bg-[#ff5a36]/10 blur-[120px] rounded-full"></div>
           
-          {/* Executive Subtitle Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111c38] border border-blue-500/30 text-slate-200 text-xs font-mono shadow-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Multimodal Vision OCR · Google Gemini 3.5</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-blue-400 font-bold">100% Deterministic Math Parity</span>
-          </div>
+          {/* Subtle Cyber Perspective Grid */}
+          <div 
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 1px, transparent 1px)',
+              backgroundSize: '32px 32px'
+            }}
+          />
+        </div>
 
-          {/* Punchy Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Stop Reconciling Invoices by Hand.{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-300">
-              Start Auditing with Vision AI.
-            </span>
-          </h1>
-
-          {/* Subhead */}
-          <p className="max-w-3xl mx-auto text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed font-sans">
-            Instant multimodal extraction, line-item verification, and mathematical discrepancy detection built for Indian GST compliance. Catch overbilling, broken tax formulas, and hidden vendor errors before wire transfer dispatch.
-          </p>
-
-          {/* Primary Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
-            <Link
-              to="/dashboard"
-              className="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2 group"
-            >
-              <span>Launch Auditor Workspace (Free)</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            <Link
-              to="/support"
-              className="px-5 py-3.5 rounded-xl bg-[#111c38] hover:bg-[#1a294f] border border-[#1e2e54] text-slate-200 font-semibold text-xs sm:text-sm transition-colors flex items-center gap-2 shadow-sm"
-            >
-              <Bot className="w-4 h-4 text-cyan-400" />
-              <span>Talk to AI Support Bot</span>
-            </Link>
-
-            <Link
-              to="/register"
-              className="px-5 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-semibold text-xs sm:text-sm transition-colors"
-            >
-              Create Account
-            </Link>
-          </div>
-
-          {/* Social Proof Counter Strip */}
-          <div className="pt-10 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-800/80 mt-12">
-            <div className="p-4 rounded-xl bg-[#111c38] border border-[#1e2e54] shadow-md">
-              <div className="text-2xl font-bold font-mono text-emerald-400">99.8%</div>
-              <div className="text-xs text-slate-300 mt-1 font-semibold">Extraction Accuracy</div>
-              <div className="text-[11px] text-slate-400 font-mono">Multimodal OCR across messy scans</div>
+        <div className="max-w-7xl mx-auto w-full py-16 sm:py-24 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Left Column: VISTA.IO Typography */}
+          <div className="lg:col-span-8 space-y-8">
+            
+            {/* VISTA.IO Giant Hero Typography */}
+            <div className="space-y-1">
+              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-mono font-black text-white tracking-tight uppercase leading-[0.95]">
+                <div className="flex items-baseline gap-4 sm:gap-8">
+                  <span>THE</span>
+                  <span className="text-slate-300 font-light">NEW</span>
+                </div>
+                <div>STANDARD</div>
+                <div className="flex items-baseline gap-4 sm:gap-8">
+                  <span>IN</span>
+                  <span className="text-white">DATA</span>
+                </div>
+                <div className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                  ANALYSIS
+                </div>
+              </h1>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111c38] border border-[#1e2e54] shadow-md">
-              <div className="text-2xl font-bold font-mono text-blue-400">0.4s</div>
-              <div className="text-xs text-slate-300 mt-1 font-semibold">Parse Latency</div>
-              <div className="text-[11px] text-slate-400 font-mono">Streamlined token generation</div>
+            {/* VISTA.IO Subhead */}
+            <div className="space-y-2 max-w-xl">
+              <p className="text-lg sm:text-xl font-mono text-slate-300 leading-snug">
+                Use Data to Get a 360-Degree View of Your Business
+              </p>
+              <p className="text-xs sm:text-sm text-slate-400 font-sans leading-relaxed">
+                Autonomous Accounts Payable auditing powered by Gemini Vision &amp; PolicyGuard. Eliminate fraudulent overbilling, catch alcohol and per-diem violations, and verify arithmetic integrity before approval.
+              </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111c38] border border-[#1e2e54] shadow-md">
-              <div className="text-2xl font-bold font-mono text-amber-400">Zero</div>
-              <div className="text-xs text-slate-300 mt-1 font-semibold">Setup Required</div>
-              <div className="text-[11px] text-slate-400 font-mono">Drop PDF or camera capture to audit</div>
+            {/* VISTA.IO Coral Orange CTA Button */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                to="/dashboard"
+                className="px-8 py-3.5 rounded-lg bg-[#ff5a36] hover:bg-[#ff6e4e] text-[#080d1a] font-extrabold text-sm uppercase tracking-wider transition-all shadow-xl shadow-[#ff5a36]/30 hover:shadow-[#ff5a36]/50 hover:-translate-y-0.5"
+              >
+                Learn More
+              </Link>
+
+              <Link
+                to="/dashboard"
+                className="px-6 py-3.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2"
+              >
+                <span>Judge Quick Presets</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#ff5a36]" />
+              </Link>
+            </div>
+
+            {/* Quick Metrics Ticker */}
+            <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-6 max-w-lg text-xs font-mono">
+              <div>
+                <div className="text-white font-bold text-base">PolicyGuard</div>
+                <div className="text-slate-400 text-[11px]">3 Compliance Rules</div>
+              </div>
+              <div>
+                <div className="text-[#ff5a36] font-bold text-base">TamperShield</div>
+                <div className="text-slate-400 text-[11px]">AI Vision Forensics</div>
+              </div>
+              <div>
+                <div className="text-emerald-400 font-bold text-base">₹0.00 Variance</div>
+                <div className="text-slate-400 text-[11px]">Deterministic Math</div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column: 3D Point-Cloud / Interactive Robot Assistant */}
+          <div className="lg:col-span-4 flex justify-center">
+            <div className="relative w-full max-w-sm rounded-2xl bg-[#0f172a]/80 border border-white/10 p-6 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                <span className="text-xs font-mono uppercase text-slate-400 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#ff5a36] animate-pulse"></span>
+                  Vision Audit Engine
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
+                  v2.5 LIVE
+                </span>
+              </div>
+
+              {/* 3D Robot Interactive Canvas */}
+              <div className="h-64 w-full rounded-xl overflow-hidden bg-black/40 border border-white/5 relative">
+                <ThreeRobot />
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-400">Interactive AP Guide</span>
+                <Link to="/support" className="text-[#ff5a36] hover:underline font-bold">
+                  Open Terminal →
+                </Link>
+              </div>
             </div>
           </div>
 
         </div>
       </section>
+
 
       {/* Interactive Before & After Playground Widget */}
       <section id="playground" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
