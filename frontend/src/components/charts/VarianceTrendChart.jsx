@@ -1,31 +1,30 @@
 import React, { useState } from 'react';
-import { TrendingUp, AlertTriangle, ShieldCheck, DollarSign, Calendar } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 export default function VarianceTrendChart() {
   const [timeRange, setTimeRange] = useState('30d');
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  // Data sets for different timeframes
   const dataSets = {
     '7d': [
-      { label: 'Mon', invoiced: 420000, reconciled: 395000, variance: 25000, count: 8 },
-      { label: 'Tue', invoiced: 680000, reconciled: 680000, variance: 0, count: 14 },
-      { label: 'Wed', invoiced: 510000, reconciled: 492600, variance: 17400, count: 11 },
-      { label: 'Thu', invoiced: 890000, reconciled: 865000, variance: 25000, count: 19 },
-      { label: 'Fri', invoiced: 1120000, reconciled: 1045000, variance: 75000, count: 24 },
-      { label: 'Sat', invoiced: 340000, reconciled: 320000, variance: 20000, count: 6 },
-      { label: 'Sun', invoiced: 180000, reconciled: 180000, variance: 0, count: 3 }
+      { label: 'Mon', invoiced: 420000, reconciled: 395000, variance: 25000 },
+      { label: 'Tue', invoiced: 680000, reconciled: 680000, variance: 0 },
+      { label: 'Wed', invoiced: 510000, reconciled: 492600, variance: 17400 },
+      { label: 'Thu', invoiced: 890000, reconciled: 865000, variance: 25000 },
+      { label: 'Fri', invoiced: 1120000, reconciled: 1045000, variance: 75000 },
+      { label: 'Sat', invoiced: 340000, reconciled: 320000, variance: 20000 },
+      { label: 'Sun', invoiced: 180000, reconciled: 180000, variance: 0 }
     ],
     '30d': [
-      { label: 'Week 1', invoiced: 1850000, reconciled: 1780000, variance: 70000, count: 34 },
-      { label: 'Week 2', invoiced: 2420000, reconciled: 2315000, variance: 105000, count: 48 },
-      { label: 'Week 3', invoiced: 1980000, reconciled: 1890000, variance: 90000, count: 39 },
-      { label: 'Week 4', invoiced: 2202900, reconciled: 1985750, variance: 217150, count: 45 }
+      { label: 'Week 1', invoiced: 1850000, reconciled: 1780000, variance: 70000 },
+      { label: 'Week 2', invoiced: 2420000, reconciled: 2315000, variance: 105000 },
+      { label: 'Week 3', invoiced: 1980000, reconciled: 1890000, variance: 90000 },
+      { label: 'Week 4', invoiced: 2202900, reconciled: 1985750, variance: 217150 }
     ],
     '90d': [
-      { label: 'Jul 2026', invoiced: 7200000, reconciled: 6890000, variance: 310000, count: 128 },
-      { label: 'Aug 2026', invoiced: 8100000, reconciled: 7720000, variance: 380000, count: 146 },
-      { label: 'Sep 2026', invoiced: 8452900, reconciled: 7970750, variance: 482150, count: 166 }
+      { label: 'Jul', invoiced: 7200000, reconciled: 6890000, variance: 310000 },
+      { label: 'Aug', invoiced: 8100000, reconciled: 7720000, variance: 380000 },
+      { label: 'Sep', invoiced: 8452900, reconciled: 7970750, variance: 482150 }
     ]
   };
 
@@ -35,15 +34,13 @@ export default function VarianceTrendChart() {
   const totalReconciled = activeData.reduce((acc, d) => acc + d.reconciled, 0);
   const totalVariance = activeData.reduce((acc, d) => acc + d.variance, 0);
 
-  // SVG dimensions
-  const svgWidth = 720;
-  const svgHeight = 240;
-  const paddingX = 40;
-  const paddingY = 30;
+  const svgWidth = 680;
+  const svgHeight = 200;
+  const paddingX = 48;
+  const paddingY = 20;
   const chartWidth = svgWidth - paddingX * 2;
   const chartHeight = svgHeight - paddingY * 2;
 
-  // Calculate coordinates for area/line paths
   const points = activeData.map((d, i) => {
     const x = paddingX + (i / (activeData.length - 1 || 1)) * chartWidth;
     const yInvoiced = paddingY + chartHeight - (d.invoiced / maxInvoiced) * chartHeight;
@@ -51,307 +48,226 @@ export default function VarianceTrendChart() {
     return { ...d, x, yInvoiced, yReconciled };
   });
 
-  // Construct SVG Path
-  const invoicedLine = points.reduce((acc, p, i) => `${acc} ${i === 0 ? 'M' : 'L'} ${p.x} ${p.yInvoiced}`, '');
-  const reconciledLine = points.reduce((acc, p, i) => `${acc} ${i === 0 ? 'M' : 'L'} ${p.x} ${p.yReconciled}`, '');
-  const areaPath = `${invoicedLine} L ${points[points.length - 1].x} ${svgHeight - paddingY} L ${points[0].x} ${svgHeight - paddingY} Z`;
+  // Build smooth bezier curve paths
+  const buildPath = (pts, yKey) => {
+    if (pts.length < 2) return pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p[yKey]}`).join(' ');
+    let d = `M ${pts[0].x} ${pts[0][yKey]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const cp1x = pts[i].x + (pts[i + 1].x - pts[i].x) / 3;
+      const cp2x = pts[i + 1].x - (pts[i + 1].x - pts[i].x) / 3;
+      d += ` C ${cp1x} ${pts[i][yKey]}, ${cp2x} ${pts[i + 1][yKey]}, ${pts[i + 1].x} ${pts[i + 1][yKey]}`;
+    }
+    return d;
+  };
+
+  const invoicedPath = buildPath(points, 'yInvoiced');
+  const reconciledPath = buildPath(points, 'yReconciled');
+
+  // Area fill for invoiced
+  const areaPath = invoicedPath + ` L ${points[points.length - 1].x} ${paddingY + chartHeight} L ${points[0].x} ${paddingY + chartHeight} Z`;
 
   const activePoint = hoveredIndex !== null ? points[hoveredIndex] : points[points.length - 1];
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-5 transition-colors">
+    <div className="bg-white border border-zinc-200 rounded-xl p-4 sm:p-5 space-y-4">
       
-      {/* Chart Top Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-zinc-800 pb-4">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3">
         <div>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-maroon-800 dark:text-rose-400" />
-            <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white font-sans tracking-tight">
-              Financial Variance &amp; Parity Audit Trend
-            </h3>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5 font-sans">
-            Tracking Stated Invoiced Amounts (Gross) vs Mathematically Verified Parity (Ground Truth)
+          <h3 className="text-sm font-semibold text-zinc-900 flex items-center gap-1.5">
+            <TrendingUp className="w-4 h-4 text-zinc-400" />
+            Billed vs Verified Amounts
+          </h3>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Invoice totals vs what was actually verified correct
           </p>
         </div>
 
-        {/* Timeframe Selector Pills */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-zinc-950 p-1 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-mono">
-          <button
-            type="button"
-            onClick={() => setTimeRange('7d')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-              timeRange === '7d' 
-                ? 'bg-white dark:bg-zinc-800 text-maroon-800 dark:text-rose-400 shadow-xs' 
-                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Last 7D
-          </button>
-          <button
-            type="button"
-            onClick={() => setTimeRange('30d')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-              timeRange === '30d' 
-                ? 'bg-white dark:bg-zinc-800 text-maroon-800 dark:text-rose-400 shadow-xs' 
-                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Last 30D
-          </button>
-          <button
-            type="button"
-            onClick={() => setTimeRange('90d')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-              timeRange === '90d' 
-                ? 'bg-white dark:bg-zinc-800 text-maroon-800 dark:text-rose-400 shadow-xs' 
-                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Quarterly
-          </button>
+        <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-lg text-xs font-medium">
+          {['7d', '30d', '90d'].map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => { setTimeRange(key); setHoveredIndex(null); }}
+              className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-[11px] ${
+                timeRange === key
+                  ? 'bg-white text-zinc-900 shadow-sm font-semibold'
+                  : 'text-zinc-500 hover:text-zinc-900'
+              }`}
+            >
+              {key === '7d' ? '7 Days' : key === '30d' ? '30 Days' : '3 Months'}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Metric Quick Indicators */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-3 bg-slate-50 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400 uppercase font-bold">Total Invoiced Billed</span>
-            <div className="text-base font-extrabold font-mono text-slate-900 dark:text-white">
-              ₹{totalInvoiced.toLocaleString('en-IN')}
-            </div>
+      {/* KPI Pills */}
+      <div className="grid grid-cols-3 gap-2.5">
+        <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-200">
+          <div className="text-[10px] text-zinc-500 font-medium">Total Billed</div>
+          <div className="text-sm font-bold font-mono text-zinc-900 mt-0.5">
+            ₹{(totalInvoiced / 100000).toFixed(2)}L
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-zinc-600"></span>
         </div>
-
-        <div className="p-3 bg-slate-50 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase font-bold">Verified Ground Truth</span>
-            <div className="text-base font-extrabold font-mono text-emerald-600 dark:text-emerald-400">
-              ₹{totalReconciled.toLocaleString('en-IN')}
-            </div>
+        <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-200">
+          <div className="text-[10px] text-zinc-500 font-medium">Verified Correct</div>
+          <div className="text-sm font-bold font-mono text-zinc-900 mt-0.5">
+            ₹{(totalReconciled / 100000).toFixed(2)}L
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
         </div>
-
-        <div className="p-3 bg-rose-50/70 dark:bg-rose-950/40 rounded-xl border border-rose-200 dark:border-rose-800/80 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-mono text-rose-700 dark:text-rose-300 uppercase font-bold">Variance Prevented</span>
-            <div className="text-base font-extrabold font-mono text-rose-600 dark:text-rose-400">
-              +₹{totalVariance.toLocaleString('en-IN')}
-            </div>
+        <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+          <div className="text-[10px] text-red-600 font-medium">Overbilling Caught</div>
+          <div className="text-sm font-bold font-mono text-red-700 mt-0.5">
+            +₹{(totalVariance / 1000).toFixed(1)}k
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
         </div>
       </div>
 
-      {/* Interactive SVG Trend Graph */}
-      <div className="relative w-full overflow-hidden pt-2">
-        <div className="w-full overflow-x-auto">
-          <svg 
-            viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
-            className="w-full h-auto min-w-[500px] select-none"
-          >
-            <defs>
-              {/* Gradient for Invoiced Area */}
-              <linearGradient id="maroonGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#800020" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#800020" stopOpacity="0.0" />
-              </linearGradient>
-
-              {/* Gradient for Reconciled Line Glow */}
-              <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-
-            {/* Horizontal Gridlines */}
-            {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
-              const y = paddingY + chartHeight * ratio;
-              const val = maxInvoiced * (1 - ratio);
-              return (
-                <g key={idx}>
-                  <line 
-                    x1={paddingX} 
-                    y1={y} 
-                    x2={svgWidth - paddingX} 
-                    y2={y} 
-                    stroke="currentColor" 
-                    strokeDasharray="3 3" 
-                    className="text-slate-200 dark:text-zinc-800" 
-                    strokeWidth="1" 
-                  />
-                  <text 
-                    x={paddingX - 6} 
-                    y={y + 3} 
-                    textAnchor="end" 
-                    className="text-[9px] fill-slate-400 dark:fill-zinc-600 font-mono"
-                  >
-                    ₹{(val / 1000).toFixed(0)}k
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Invoiced Area Fill */}
-            <path d={areaPath} fill="url(#maroonGrad)" />
-
-            {/* Reconciled Line (Ground Truth) */}
-            <path 
-              d={reconciledLine} 
-              fill="none" 
-              stroke="#10b981" 
-              strokeWidth="2.5" 
-              strokeDasharray="4 2"
-            />
-
-            {/* Invoiced Line (Gross Billed) */}
-            <path 
-              d={invoicedLine} 
-              fill="none" 
-              stroke="#800020" 
-              strokeWidth="3" 
-              className="dark:stroke-rose-400"
-            />
-
-            {/* Interactive Data Points and Hover Crosshair */}
-            {points.map((p, i) => {
-              const isHovered = hoveredIndex === i;
-              const hasGap = p.variance > 0;
-              return (
-                <g 
-                  key={i} 
-                  className="cursor-pointer transition-all"
-                  onMouseEnter={() => setHoveredIndex(i)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+      {/* SVG Chart */}
+      <div className="w-full overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          className="w-full h-auto min-w-[400px] select-none"
+          style={{ minHeight: 160 }}
+        >
+          {/* Grid lines */}
+          {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
+            const y = paddingY + chartHeight * ratio;
+            const val = maxInvoiced * (1 - ratio);
+            return (
+              <g key={idx}>
+                <line
+                  x1={paddingX} y1={y}
+                  x2={svgWidth - paddingX} y2={y}
+                  stroke="#e4e4e7"
+                  strokeDasharray={ratio === 0 ? '' : '3 3'}
+                  strokeWidth="1"
+                />
+                <text
+                  x={paddingX - 6}
+                  y={y + 4}
+                  textAnchor="end"
+                  fontSize="9"
+                  fill="#a1a1aa"
+                  fontFamily="monospace"
                 >
-                  {/* Invisible Hitbox for easy hover */}
-                  <rect 
-                    x={p.x - 24} 
-                    y={paddingY} 
-                    width={48} 
-                    height={chartHeight} 
-                    fill="transparent" 
+                  ₹{val >= 100000 ? `${(val / 100000).toFixed(1)}L` : `${(val / 1000).toFixed(0)}k`}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Area fill */}
+          <path d={areaPath} fill="#09090b" fillOpacity="0.04" />
+
+          {/* Reconciled dashed line */}
+          <path
+            d={reconciledPath}
+            fill="none"
+            stroke="#a1a1aa"
+            strokeWidth="2"
+            strokeDasharray="5 3"
+          />
+
+          {/* Invoiced solid line */}
+          <path
+            d={invoicedPath}
+            fill="none"
+            stroke="#09090b"
+            strokeWidth="2.5"
+          />
+
+          {/* Interactive points */}
+          {points.map((p, i) => {
+            const isHovered = hoveredIndex === i;
+            const hasError = p.variance > 0;
+            return (
+              <g
+                key={i}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Hit area */}
+                <rect x={p.x - 22} y={paddingY} width={44} height={chartHeight} fill="transparent" />
+
+                {/* Vertical hover guide */}
+                {isHovered && (
+                  <line
+                    x1={p.x} y1={paddingY}
+                    x2={p.x} y2={paddingY + chartHeight}
+                    stroke="#d4d4d8"
+                    strokeWidth="1"
+                    strokeDasharray="2 2"
                   />
+                )}
 
-                  {/* Vertical Crosshair Guide */}
-                  {isHovered && (
-                    <line 
-                      x1={p.x} 
-                      y1={paddingY} 
-                      x2={p.x} 
-                      y2={svgHeight - paddingY} 
-                      stroke="#800020" 
-                      strokeWidth="1.5" 
-                      strokeDasharray="3 3"
-                      className="dark:stroke-rose-400"
-                    />
-                  )}
+                {/* Reconciled dot */}
+                <circle cx={p.x} cy={p.yReconciled} r={isHovered ? 4 : 2.5} fill="#a1a1aa" />
 
-                  {/* Variance Gap Connector between Billed and Reconciled */}
-                  {hasGap && (
-                    <line 
-                      x1={p.x} 
-                      y1={p.yInvoiced} 
-                      x2={p.x} 
-                      y2={p.yReconciled} 
-                      stroke="#f43f5e" 
-                      strokeWidth="2" 
-                      strokeDasharray="2 2"
-                    />
-                  )}
+                {/* Invoiced dot */}
+                <circle
+                  cx={p.x}
+                  cy={p.yInvoiced}
+                  r={isHovered ? 5.5 : 3.5}
+                  fill={hasError ? '#ef4444' : '#09090b'}
+                  stroke="white"
+                  strokeWidth="1.5"
+                />
 
-                  {/* Dot for Reconciled */}
-                  <circle 
-                    cx={p.x} 
-                    cy={p.yReconciled} 
-                    r={isHovered ? 5 : 3.5} 
-                    fill="#10b981" 
-                    stroke="#ffffff" 
-                    strokeWidth="1.5" 
-                  />
+                {/* Label */}
+                <text
+                  x={p.x}
+                  y={svgHeight - 5}
+                  textAnchor="middle"
+                  fontSize="9"
+                  fill={isHovered ? '#09090b' : '#a1a1aa'}
+                  fontFamily="monospace"
+                  fontWeight={isHovered ? 'bold' : 'normal'}
+                >
+                  {p.label}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
 
-                  {/* Dot for Invoiced */}
-                  <circle 
-                    cx={p.x} 
-                    cy={p.yInvoiced} 
-                    r={isHovered ? 6 : 4.5} 
-                    fill={hasGap ? '#f43f5e' : '#800020'} 
-                    stroke="#ffffff" 
-                    strokeWidth="2" 
-                    className="dark:stroke-zinc-900"
-                  />
-
-                  {/* X Axis Label */}
-                  <text 
-                    x={p.x} 
-                    y={svgHeight - 10} 
-                    textAnchor="middle" 
-                    className={`text-[10px] font-mono transition-colors ${
-                      isHovered ? 'fill-maroon-800 dark:fill-rose-400 font-bold' : 'fill-slate-500 dark:fill-zinc-400'
-                    }`}
-                  >
-                    {p.label}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-
-        {/* Dynamic Detail Card for Selected Point */}
-        {activePoint && (
-          <div className="mt-2 p-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-maroon-800 dark:bg-rose-400"></span>
-              <span className="font-bold text-slate-900 dark:text-white">
-                {activePoint.label} Telemetry Snapshot:
-              </span>
-              <span className="text-slate-500 dark:text-zinc-400">({activePoint.count} Invoices Audited)</span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <div>
-                <span className="text-slate-500 dark:text-zinc-400 mr-1.5">Billed:</span>
-                <span className="font-bold text-slate-900 dark:text-white">
-                  ₹{activePoint.invoiced.toLocaleString('en-IN')}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-500 dark:text-zinc-400 mr-1.5">Audited:</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                  ₹{activePoint.reconciled.toLocaleString('en-IN')}
-                </span>
-              </div>
-              <div className="px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold">
-                {activePoint.variance > 0 
-                  ? `Overbilling Prevented: +₹${activePoint.variance.toLocaleString('en-IN')}` 
-                  : 'Zero Variance (100% Parity)'}
-              </div>
-            </div>
+      {/* Tooltip card */}
+      {activePoint && (
+        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs">
+          <span className="font-semibold text-zinc-900">{activePoint.label}</span>
+          <div className="flex items-center gap-4">
+            <span className="text-zinc-500">
+              Billed: <strong className="text-zinc-900 font-mono">₹{activePoint.invoiced.toLocaleString('en-IN')}</strong>
+            </span>
+            <span className="text-zinc-500">
+              Verified: <strong className="text-zinc-900 font-mono">₹{activePoint.reconciled.toLocaleString('en-IN')}</strong>
+            </span>
+            {activePoint.variance > 0 ? (
+              <span className="font-semibold text-red-600">+₹{activePoint.variance.toLocaleString('en-IN')} error</span>
+            ) : (
+              <span className="font-semibold text-emerald-700">✓ Matched</span>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
+      {/* Legend */}
+      <div className="flex items-center gap-5 text-xs text-zinc-500 pt-1">
+        <span className="flex items-center gap-1.5">
+          <span className="w-5 h-0.5 bg-zinc-900 inline-block rounded" />
+          Billed Amount
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-5 h-0.5 bg-zinc-400 inline-block rounded border-b border-dashed border-zinc-400" />
+          Verified Total
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />
+          Overcharge
+        </span>
       </div>
-
-      {/* Chart Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-6 pt-1 text-xs font-mono">
-        <div className="flex items-center gap-2">
-          <span className="w-3.5 h-1 bg-maroon-800 dark:bg-rose-400 rounded-full"></span>
-          <span className="text-slate-700 dark:text-zinc-300 font-semibold">Stated Invoice Amount (Gross)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3.5 h-1 bg-emerald-500 rounded-full border-b border-dashed"></span>
-          <span className="text-slate-700 dark:text-zinc-300 font-semibold">Verified Ground Truth (Clean Parity)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
-          <span className="text-rose-600 dark:text-rose-400 font-bold">Arithmetic Variance Gap (Overcharge)</span>
-        </div>
-      </div>
-
     </div>
   );
 }

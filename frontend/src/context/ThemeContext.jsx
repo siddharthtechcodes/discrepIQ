@@ -1,41 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 
 const ThemeContext = createContext(null);
-const THEME_STORAGE_KEY = 'discrepiq_theme_mode';
 
+// Forced light mode only — dark mode removed per user request
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      if (saved === 'dark' || saved === 'light') return saved;
-      // Default to dark for premium Apple obsidian look, or check system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-      }
-    } catch (e) {}
-    return 'light';
-  });
-
-  useEffect(() => {
-    try {
-      const root = document.documentElement;
-      if (theme === 'dark') {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-      localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch (e) {
-      console.error('Failed to sync theme to root DOM:', e);
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  // Always ensure light mode is applied
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.remove('dark');
+  }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme, isDark: theme === 'dark' }}>
+    <ThemeContext.Provider value={{ theme: 'light', toggleTheme: () => {}, setTheme: () => {}, isDark: false }}>
       {children}
     </ThemeContext.Provider>
   );

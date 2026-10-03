@@ -1,27 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Download, 
   FileText, 
   CheckCircle2, 
   AlertTriangle, 
-  Scale, 
   Save, 
-  Trash2, 
-  Share2, 
-  Printer, 
-  Building2, 
-  Calendar, 
-  ShieldCheck, 
-  Zap,
-  Edit2,
-  Check,
-  RotateCcw,
-  Sparkles,
-  Bot,
-  Flame,
-  ShieldAlert
+  Check, 
+  Bot, 
+  Flame
 } from 'lucide-react';
 import { useDocuments } from '../context/DocumentContext';
 import ExtractedDataViewer from '../components/ExtractedDataViewer';
@@ -107,7 +95,7 @@ export default function InspectorPage() {
       lineItems
     });
     setHasUnsavedChanges(false);
-    showToast('Ledger changes saved & mathematically verified.');
+    showToast('Ledger changes saved & verified.');
   };
 
   const handleApproveReconcile = () => {
@@ -116,7 +104,8 @@ export default function InspectorPage() {
       reconciled: true,
       status: 'verified'
     });
-    showToast('Document marked as 100% Reconciled & Approved.');
+    setDoc(prev => ({ ...prev, reconciled: true, status: 'verified' }));
+    showToast('Invoice marked as Approved & Reconciled.');
   };
 
   const handleExportCSV = () => {
@@ -135,7 +124,7 @@ export default function InspectorPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('CSV export downloaded successfully.');
+    showToast('CSV export downloaded.');
   };
 
   const handleExportJSON = () => {
@@ -170,20 +159,20 @@ export default function InspectorPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('Audit JSON downloaded successfully.');
+    showToast('Audit JSON downloaded.');
   };
 
   if (!doc) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 flex flex-col items-center justify-center p-6">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-8 max-w-md w-full text-center shadow-lg space-y-4">
-          <FileText className="w-12 h-12 text-maroon-800 dark:text-rose-400 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Loading Document...</h2>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">Preparing multimodal OCR ledger and forensic analysis.</p>
+      <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col items-center justify-center p-6 font-sans">
+        <div className="bg-white border border-zinc-200 rounded-xl p-8 max-w-md w-full text-center shadow-sm space-y-4">
+          <FileText className="w-10 h-10 text-zinc-700 mx-auto" />
+          <h2 className="text-lg font-bold text-zinc-900">Document Not Found</h2>
+          <p className="text-xs text-zinc-500">The requested invoice ID does not exist in the active register.</p>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="px-5 py-2.5 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-maroon-900/30"
+            className="px-4 py-2 rounded-lg bg-zinc-900 text-white font-semibold text-xs transition-colors cursor-pointer"
           >
             Return to Dashboard
           </button>
@@ -193,57 +182,57 @@ export default function InspectorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-zinc-100 py-6 px-4 sm:px-6 lg:px-8 selection:bg-maroon-800 selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 py-6 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Navigation & Action Top Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
+        {/* Top Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-zinc-200">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
-              title="Return to Workspace"
+              className="p-2 rounded-lg bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 transition-colors shadow-xs cursor-pointer"
+              title="Return to Dashboard"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight font-sans">
-                  Document Inspector &amp; Ledger
+                <h1 className="text-xl font-bold text-zinc-900 tracking-tight">
+                  Invoice Inspector
                 </h1>
-                <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 font-bold">
+                <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-zinc-100 border border-zinc-200 text-zinc-700 font-medium">
                   {doc.id}
                 </span>
                 {doc.reconciled && (
-                  <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold">
+                  <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Reconciled &amp; Approved
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono mt-0.5">
-                {doc.name} · {doc.engine} · Extracted: {doc.timestamp}
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {doc.name} · Extracted: {doc.timestamp}
               </p>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => navigate('/support')}
-              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-maroon-50 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-mono text-maroon-800 dark:text-rose-400 hover:text-maroon-900 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-50 border border-zinc-200 text-xs font-medium text-zinc-700 transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Bot className="w-3.5 h-3.5" />
-              <span>Ask AI Bot</span>
+              <span>Ask Support Bot</span>
             </button>
 
             {hasUnsavedChanges && (
               <button
                 type="button"
                 onClick={handleSaveLedger}
-                className="px-4 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white text-xs font-bold font-mono transition-colors flex items-center gap-1.5 shadow-md shadow-maroon-900/30 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Changes</span>
@@ -252,26 +241,29 @@ export default function InspectorPage() {
 
             <button
               type="button"
+              id="export-csv-btn"
               onClick={handleExportCSV}
-              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <Download className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
+              <Download className="w-3.5 h-3.5 text-zinc-600" />
               <span>Export CSV</span>
             </button>
 
             <button
               type="button"
+              id="export-json-btn"
               onClick={handleExportJSON}
-              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <FileText className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
+              <FileText className="w-3.5 h-3.5 text-zinc-600" />
               <span>Audit JSON</span>
             </button>
 
             <button
               type="button"
+              id="approve-reconcile-btn"
               onClick={handleApproveReconcile}
-              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Check className="w-4 h-4" />
               <span>Approve &amp; Reconcile</span>
@@ -279,38 +271,38 @@ export default function InspectorPage() {
           </div>
         </div>
 
-        {/* PolicyGuard Compliance Shield & TamperShield AI Forensics Card */}
+        {/* PolicyGuard and Forensics Card */}
         <ExtractedDataViewer document={doc} />
 
         {/* Side-by-Side Comparison Workspace */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* Left Panel: Uploaded Document Preview (5 cols) */}
-          <div className="lg:col-span-5 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm space-y-4 lg:sticky lg:top-24">
+          {/* Left Panel: Scanned Document Preview (5 cols) */}
+          <div className="lg:col-span-5 bg-white border border-zinc-200 rounded-xl p-5 shadow-sm space-y-4 lg:sticky lg:top-20">
             
-            <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-zinc-400 border-b border-slate-100 dark:border-zinc-800 pb-3">
-              <span className="flex items-center gap-2 font-bold text-slate-800 dark:text-zinc-200">
-                <FileText className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
-                INGESTED DOCUMENT PREVIEW
+            <div className="flex items-center justify-between text-xs text-zinc-500 border-b border-zinc-100 pb-3">
+              <span className="flex items-center gap-2 font-semibold text-zinc-900">
+                <FileText className="w-4 h-4 text-zinc-700" />
+                Ingested Invoice Summary
               </span>
-              <span className="text-[10px] text-slate-400 dark:text-zinc-500 uppercase font-bold">{doc.fileSize}</span>
+              <span className="text-[11px] text-zinc-400 uppercase font-mono">{doc.fileSize}</span>
             </div>
 
             {/* Document Visual Card */}
-            <div className="bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl p-5 font-mono text-xs text-slate-800 dark:text-zinc-200 space-y-4 relative overflow-hidden shadow-xs">
+            <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 font-mono text-xs text-zinc-800 space-y-4">
               
               {/* Paper Header */}
-              <div className="border-b border-slate-200 dark:border-zinc-800 pb-3 space-y-1">
+              <div className="border-b border-zinc-200 pb-3 space-y-1">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">{vendor}</h3>
-                    <p className="text-[11px] text-slate-500 dark:text-zinc-400">{gstin}</p>
+                    <h3 className="font-bold text-zinc-900 text-sm font-sans">{vendor}</h3>
+                    <p className="text-[11px] text-zinc-500">{gstin}</p>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded text-[10px] bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700 font-bold shadow-xs">
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-white text-zinc-700 border border-zinc-200 font-semibold shadow-xs">
                     TAX INVOICE
                   </span>
                 </div>
-                <div className="flex justify-between text-[11px] text-slate-500 dark:text-zinc-400 pt-2">
+                <div className="flex justify-between text-[11px] text-zinc-500 pt-2 font-mono">
                   <span>Ref: {invoiceNumber}</span>
                   <span>Date: {invoiceDate}</span>
                 </div>
@@ -318,13 +310,13 @@ export default function InspectorPage() {
 
               {/* Scanned Items Mockup */}
               <div className="space-y-2 pt-1 text-[11px]">
-                <div className="text-slate-400 dark:text-zinc-500 font-bold uppercase text-[10px]">Recognized Line Items:</div>
+                <div className="text-zinc-400 font-semibold uppercase text-[10px]">Extracted Line Items:</div>
                 {(lineItems || []).map((item, i) => (
-                  <div key={i} className="flex justify-between border-b border-slate-200/60 dark:border-zinc-800 pb-1.5">
-                    <span className="text-slate-700 dark:text-zinc-300 truncate max-w-[200px]">
+                  <div key={i} className="flex justify-between border-b border-zinc-200/60 pb-1.5">
+                    <span className="text-zinc-700 truncate max-w-[200px]">
                       {item?.quantity || 1}x {item?.description || 'Item'}
                     </span>
-                    <span className="text-slate-900 dark:text-white font-bold">
+                    <span className="text-zinc-900 font-bold">
                       ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
@@ -332,24 +324,24 @@ export default function InspectorPage() {
               </div>
 
               {/* Document Footprint */}
-              <div className="border-t border-slate-200 dark:border-zinc-800 pt-3 space-y-1.5 text-xs">
-                <div className="flex justify-between text-slate-600 dark:text-zinc-400">
+              <div className="border-t border-zinc-200 pt-3 space-y-1.5 text-xs">
+                <div className="flex justify-between text-zinc-600">
                   <span>Subtotal:</span>
                   <span>₹{Number(calculatedSubtotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-zinc-400">
+                <div className="flex justify-between text-zinc-600">
                   <span>GST (18%):</span>
                   <span>₹{Number(taxSum).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
                 
-                {/* Printed Total Row with Forensic Pulsating Highlight if Tampered */}
-                <div className={`flex justify-between font-bold border-t border-slate-200 dark:border-zinc-800 pt-2 text-sm transition-all ${
+                {/* Printed Total Row */}
+                <div className={`flex justify-between font-bold border-t border-zinc-200 pt-2 text-sm ${
                   doc.forensicAnalysis?.tamperingDetected 
-                    ? 'p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 border-2 border-rose-500 text-rose-700 dark:text-rose-300 forensic-heatmap-pulsate' 
-                    : 'text-amber-700 dark:text-amber-400'
+                    ? 'p-2 rounded bg-red-50 border border-red-300 text-red-700' 
+                    : 'text-zinc-900'
                 }`}>
                   <span className="flex items-center gap-1.5">
-                    {doc.forensicAnalysis?.tamperingDetected && <Flame className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 animate-pulse" />}
+                    {doc.forensicAnalysis?.tamperingDetected && <Flame className="w-3.5 h-3.5 text-red-600" />}
                     Printed Invoice Total:
                   </span>
                   <span>₹{Number(statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
@@ -360,97 +352,97 @@ export default function InspectorPage() {
             </div>
 
             {/* Document Metadata Details */}
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl space-y-2 text-xs font-mono">
-              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
-                <span>OCR Pipeline:</span>
-                <span className="text-slate-900 dark:text-white font-semibold">Gemini Vision Multimodal API</span>
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-lg space-y-2 text-xs">
+              <div className="flex justify-between text-zinc-600">
+                <span>OCR Engine:</span>
+                <span className="text-zinc-900 font-semibold">{doc.engine || 'Vision Parser'}</span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
-                <span>Arithmetic Verification:</span>
-                <span className={isBalanced ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-amber-600 dark:text-amber-400 font-bold'}>
+              <div className="flex justify-between text-zinc-600">
+                <span>Verification:</span>
+                <span className={isBalanced ? 'text-emerald-700 font-semibold' : 'text-red-700 font-semibold'}>
                   {isBalanced ? 'Zero Discrepancy' : `Variance (₹${variance.toFixed(2)})`}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
-                <span>Compliance Standard:</span>
-                <span className="text-slate-900 dark:text-white font-semibold">Indian GST Law (CGST / SGST / IGST)</span>
+              <div className="flex justify-between text-zinc-600">
+                <span>Compliance Rule:</span>
+                <span className="text-zinc-900 font-semibold">Indian GST Standard</span>
               </div>
             </div>
 
           </div>
 
           {/* Right Panel: Editable Extracted Fields & Line Items Ledger (7 cols) */}
-          <div className="lg:col-span-7 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="lg:col-span-7 bg-white border border-zinc-200 rounded-xl p-5 shadow-sm space-y-5">
             
             {/* Discrepancy Alert or Verification Banner */}
             {!isBalanced ? (
-              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 space-y-1.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-sm">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                  <span>Mathematical Discrepancy Detected: +₹{variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 space-y-1">
+                <div className="flex items-center gap-2 font-semibold text-sm">
+                  <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                  <span>Mathematical Discrepancy: +₹{variance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed font-sans">
-                  The stated invoice total (<span className="font-mono text-amber-800 dark:text-amber-300 font-bold">₹{statedTotal.toLocaleString('en-IN')}</span>) differs from the computed sum of line items + GST (<span className="font-mono text-emerald-700 dark:text-emerald-400 font-bold">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>). Edit values below to recalculate.
+                <p className="text-xs text-red-700 leading-relaxed">
+                  The stated invoice total (<span className="font-mono font-bold">₹{statedTotal.toLocaleString('en-IN')}</span>) differs from the computed sum of line items + GST (<span className="font-mono font-bold">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>). Edit values below to recalculate.
                 </p>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 space-y-1.5 shadow-xs">
-                <div className="flex items-center gap-2 font-bold text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+              <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 space-y-1">
+                <div className="flex items-center gap-2 font-semibold text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                   <span>100% Mathematical Parity Verified (₹0.00 Variance)</span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed font-sans">
-                  All line items multiplied by quantity and compounded with applicable GST perfectly reconcile with the stated invoice total.
+                <p className="text-xs text-emerald-700 leading-relaxed">
+                  All line items multiplied by quantity and compounded with applicable GST match the stated invoice total.
                 </p>
               </div>
             )}
 
-            {/* Live Interactive Parity Comparison Meter */}
+            {/* Parity Comparison Meter */}
             <VisualParityBar 
               statedTotal={statedTotal} 
               calculatedTotal={calculatedTotal} 
             />
 
             {/* Editable Invoice Header Fields */}
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800 space-y-3">
-              <div className="text-xs font-mono uppercase text-slate-600 dark:text-zinc-400 font-bold">
-                Header &amp; Entity Identification
+            <div className="p-4 bg-zinc-50 rounded-lg border border-zinc-200 space-y-3">
+              <div className="text-xs uppercase text-zinc-600 font-semibold">
+                Entity Details
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Vendor Entity</label>
+                  <label className="block text-zinc-600 font-medium text-[11px] mb-1">Vendor Entity</label>
                   <input
                     type="text"
                     value={vendor}
                     onChange={(e) => { setVendor(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white outline-hidden"
+                    className="w-full bg-white border border-zinc-200 focus:border-zinc-500 rounded-lg px-3 py-1.5 text-xs text-zinc-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Vendor GSTIN</label>
+                  <label className="block text-zinc-600 font-medium text-[11px] mb-1">Vendor GSTIN</label>
                   <input
                     type="text"
                     value={gstin}
                     onChange={(e) => { setGstin(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
+                    className="w-full bg-white border border-zinc-200 focus:border-zinc-500 rounded-lg px-3 py-1.5 text-xs text-zinc-900 font-mono outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Invoice Number</label>
+                  <label className="block text-zinc-600 font-medium text-[11px] mb-1">Invoice Number</label>
                   <input
                     type="text"
                     value={invoiceNumber}
                     onChange={(e) => { setInvoiceNumber(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
+                    className="w-full bg-white border border-zinc-200 focus:border-zinc-500 rounded-lg px-3 py-1.5 text-xs text-zinc-900 font-mono outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1">Invoice Date</label>
+                  <label className="block text-zinc-600 font-medium text-[11px] mb-1">Invoice Date</label>
                   <input
                     type="date"
                     value={invoiceDate}
                     onChange={(e) => { setInvoiceDate(e.target.value); setHasUnsavedChanges(true); }}
-                    className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 focus:border-maroon-600 dark:focus:border-maroon-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono outline-hidden"
+                    className="w-full bg-white border border-zinc-200 focus:border-zinc-500 rounded-lg px-3 py-1.5 text-xs text-zinc-900 font-mono outline-none"
                   />
                 </div>
               </div>
@@ -458,58 +450,58 @@ export default function InspectorPage() {
 
             {/* Editable Line Items Table */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono text-slate-600 dark:text-zinc-400">
-                <span className="font-bold uppercase text-slate-900 dark:text-white">Audited Line Items</span>
-                <span className="text-[11px] text-slate-500 dark:text-zinc-500">Edit quantities or unit rates to test real-time recalculation</span>
+              <div className="flex items-center justify-between text-xs text-zinc-600">
+                <span className="font-semibold uppercase text-zinc-900">Line Items Ledger</span>
+                <span className="text-[11px] text-zinc-400">Edit quantities or rates to recalculate in real-time</span>
               </div>
 
-              <div className="border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900 shadow-xs">
+              <div className="border border-zinc-200 rounded-lg overflow-hidden bg-white shadow-xs">
                 <table className="w-full text-left text-xs font-sans">
-                  <thead className="bg-slate-50 dark:bg-zinc-950 text-slate-600 dark:text-zinc-400 font-mono text-[11px] border-b border-slate-200 dark:border-zinc-800">
+                  <thead className="bg-zinc-50 text-zinc-500 font-mono text-[11px] border-b border-zinc-200 uppercase">
                     <tr>
-                      <th className="px-3.5 py-2.5">Item Description</th>
-                      <th className="px-2 py-2.5 w-16 text-right">Qty</th>
-                      <th className="px-2 py-2.5 w-28 text-right">Rate (₹)</th>
-                      <th className="px-2 py-2.5 w-20 text-right">GST %</th>
-                      <th className="px-3.5 py-2.5 text-right w-28">Total (₹)</th>
+                      <th className="px-3.5 py-2">Item Description</th>
+                      <th className="px-2 py-2 w-16 text-right">Qty</th>
+                      <th className="px-2 py-2 w-24 text-right">Rate (₹)</th>
+                      <th className="px-2 py-2 w-16 text-right">GST %</th>
+                      <th className="px-3.5 py-2 text-right w-24">Total (₹)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/80 font-mono">
+                  <tbody className="divide-y divide-zinc-100 font-mono">
                     {(lineItems || []).map((item, idx) => (
-                      <tr key={item?.id || idx} className="hover:bg-slate-50 dark:hover:bg-zinc-800/60">
-                        <td className="px-3.5 py-2.5 font-sans">
+                      <tr key={item?.id || idx} className="hover:bg-zinc-50">
+                        <td className="px-3.5 py-2 font-sans">
                           <input
                             type="text"
                             value={item?.description || ''}
                             onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
-                            className="w-full bg-transparent border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1.5 py-1"
+                            className="w-full bg-transparent border-0 focus:ring-0 text-xs text-zinc-900 hover:bg-zinc-100 rounded px-1.5 py-1"
                           />
                         </td>
-                        <td className="px-2 py-2 text-right">
+                        <td className="px-2 py-1.5 text-right">
                           <input
                             type="number"
                             value={item?.quantity ?? 1}
                             onChange={(e) => handleItemChange(idx, 'quantity', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-zinc-900 hover:bg-zinc-100 rounded px-1 py-1"
                           />
                         </td>
-                        <td className="px-2 py-2 text-right">
+                        <td className="px-2 py-1.5 text-right">
                           <input
                             type="number"
                             value={item?.unitPrice ?? 0}
                             onChange={(e) => handleItemChange(idx, 'unitPrice', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-zinc-900 hover:bg-zinc-100 rounded px-1 py-1"
                           />
                         </td>
-                        <td className="px-2 py-2 text-right">
+                        <td className="px-2 py-1.5 text-right">
                           <input
                             type="number"
                             value={item?.taxRate ?? 18}
                             onChange={(e) => handleItemChange(idx, 'taxRate', e.target.value)}
-                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded px-1 py-1"
+                            className="w-full bg-transparent text-right border-0 focus:ring-0 text-xs text-zinc-700 hover:bg-zinc-100 rounded px-1 py-1"
                           />
                         </td>
-                        <td className="px-3.5 py-2.5 text-right font-bold text-slate-900 dark:text-white">
+                        <td className="px-3.5 py-2 text-right font-bold text-zinc-900">
                           ₹{Number(item?.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                       </tr>
@@ -520,22 +512,22 @@ export default function InspectorPage() {
             </div>
 
             {/* Reconciliation Totals Breakdown */}
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl space-y-2 text-xs font-mono">
-              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
+            <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-zinc-600">
                 <span>Calculated Line Items Subtotal:</span>
-                <span className="font-bold text-slate-900 dark:text-white">₹{calculatedSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="font-bold text-zinc-900">₹{calculatedSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-zinc-400">
-                <span>GST Tax Sum (18%):</span>
-                <span className="text-slate-900 dark:text-white">₹{taxSum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              <div className="flex justify-between text-zinc-600">
+                <span>GST Tax (18%):</span>
+                <span className="text-zinc-900">₹{taxSum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-slate-800 dark:text-zinc-200 font-bold border-t border-slate-200 dark:border-zinc-800 pt-2 text-sm">
+              <div className="flex justify-between text-zinc-800 font-bold border-t border-zinc-200 pt-2 text-sm">
                 <span>Calculated Payable:</span>
-                <span className="text-emerald-600 dark:text-emerald-400">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="text-emerald-700">₹{calculatedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between font-bold text-sm">
-                <span className="text-slate-700 dark:text-zinc-300">Printed Invoice Total:</span>
-                <span className={isBalanced ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
+                <span className="text-zinc-700">Printed Invoice Total:</span>
+                <span className={isBalanced ? 'text-emerald-700' : 'text-red-700'}>
                   ₹{Number(statedTotal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               </div>
@@ -549,7 +541,7 @@ export default function InspectorPage() {
 
       {/* Floating Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-maroon-950 text-white border border-maroon-800 text-xs font-mono shadow-2xl flex items-center gap-2">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-lg bg-zinc-900 text-white text-xs shadow-xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{toastMsg}</span>
         </div>

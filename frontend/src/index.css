@@ -1,158 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Force light mode only */
+html {
+  color-scheme: light !important;
+}
+
 html.dark {
-  color-scheme: dark;
+  color-scheme: light !important;
 }
 
 body {
   margin: 0;
-  background-color: #ffffff; /* Crisp Pure White Base for light mode */
-  color: #18181b;            /* High Contrast Black Typography */
+  background-color: #ffffff;
+  color: #09090b;
   overflow-x: hidden;
-  font-size: 13.5px;
-  line-height: 1.6;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
-html.dark body {
-  background-color: #09090b; /* Midnight Deep Black Base for dark mode */
-  color: #f4f4f5;            /* Crisp White Text */
+/* Monospace font for numbers and codes */
+.font-mono, code, pre {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
 }
 
-/* Tabular numbers for financial precision */
+/* Tabular numbers for financial data */
 .font-tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Clean Modern Scrollbar with Maroon accent */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #e4e4e7;
+  background: #d4d4d8;
   border-radius: 9999px;
 }
-
-html.dark ::-webkit-scrollbar-thumb {
-  background: #27272a;
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #800020;
+  background: #a1a1aa;
 }
 
-/* Maroon & White Card Styles */
-.vista-card, .discrep-card {
-  background: #ffffff;
-  border: 1px solid #fce7eb;
-  box-shadow: 0 4px 20px -2px rgba(128, 0, 32, 0.05);
-}
-
-html.dark .vista-card, html.dark .discrep-card {
-  background: #121215;
-  border-color: #27272a;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
-}
-
-/* Primary Rich Maroon Buttons */
-.vista-btn-primary, .btn-primary-maroon {
-  background-color: #800020;
+/* Selection */
+::selection {
+  background-color: #09090b;
   color: #ffffff;
-  font-weight: 700;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.vista-btn-primary:hover, .btn-primary-maroon:hover {
-  background-color: #670d24;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(128, 0, 32, 0.35);
-}
-
-.vista-btn-secondary, .btn-secondary-white {
-  background-color: #ffffff;
-  border: 1px solid #e4e4e7;
-  color: #18181b;
-  font-weight: 600;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html.dark .vista-btn-secondary, html.dark .btn-secondary-white {
-  background-color: #18181b;
-  border-color: #27272a;
-  color: #f4f4f5;
-}
-
-.vista-btn-secondary:hover, .btn-secondary-white:hover {
-  background-color: #fdf2f4;
-  border-color: #800020;
-  transform: translateY(-1px);
-}
-
-/* Precision finance table inputs */
-.input-cell {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  color: #18181b;
-  transition: all 0.15s ease;
-}
-
-html.dark .input-cell {
-  color: #f4f4f5;
-}
-
-.input-cell:hover {
-  background: #fdf2f4;
-  border-color: #f9d0d8;
-}
-
-html.dark .input-cell:hover {
-  background: #1f1f23;
-  border-color: #3f3f46;
-}
-
-.input-cell:focus {
+/* Cards */
+.card {
   background: #ffffff;
-  border-color: #800020;
-  box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.15);
-  outline: none;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
-html.dark .input-cell:focus {
-  background: #18181b;
-  border-color: #e8728d;
-  box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.4);
+/* Primary button */
+.btn-primary {
+  background: #09090b;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  transition: background 0.15s ease, transform 0.1s ease;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
 }
 
-/* Forensic Heatmap Pulsating Glow */
-@keyframes forensic-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(128, 0, 32, 0.7), inset 0 0 15px rgba(128, 0, 32, 0.2);
-    border-color: rgba(128, 0, 32, 1);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(128, 0, 32, 0), inset 0 0 25px rgba(128, 0, 32, 0.5);
-    border-color: rgba(215, 68, 104, 1);
-  }
+/* Secondary button */
+.btn-secondary {
+  background: #fff;
+  color: #09090b;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  border: 1px solid #e4e4e7;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-secondary:hover {
+  background: #f4f4f5;
+  border-color: #d4d4d8;
 }
 
-.forensic-heatmap-pulsate {
-  animation: forensic-pulse 1.8s infinite ease-in-out;
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
+/* Pulse badge */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Input base */
+input, textarea, select {
+  font-family: inherit;
+}
+
+/* Table hover row */
+.table-row-hover:hover {
+  background: #f9f9f9;
+}
+
+/* Status dot */
+.status-dot-green {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse-soft 2s infinite;
+}
+
+/* Override any residual dark classes */
+.dark\:bg-black, .dark\:bg-zinc-950, .dark\:bg-zinc-900 {
+  background-color: inherit !important;
+}
+.dark\:text-white, .dark\:text-zinc-100 {
+  color: inherit !important;
+}
+.dark\:border-zinc-800 {
+  border-color: #e4e4e7!important;
+}

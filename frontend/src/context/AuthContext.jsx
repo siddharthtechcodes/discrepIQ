@@ -12,7 +12,7 @@ export const PRESET_ACCOUNTS = [
     company: 'DiscrepIQ Financial Technologies India Ltd',
     role: 'Chief Accounts Payable Auditor',
     badge: 'Enterprise Administrator',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    avatar: null,
     gstin: 'GSTIN-29AAACE4910M1ZU',
     plan: 'Enterprise Pro v2.5',
     verifiedAudits: 284,
@@ -28,7 +28,7 @@ export const PRESET_ACCOUNTS = [
     company: 'Deloitte AP Forensic Audits LLP',
     role: 'Senior Indian GST Compliance Specialist',
     badge: 'Lead Tax Auditor',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    avatar: null,
     gstin: 'GSTIN-27AAATB4912J1ZR',
     plan: 'Tax Partner Audit Cloud',
     verifiedAudits: 642,
@@ -44,7 +44,7 @@ export const PRESET_ACCOUNTS = [
     company: 'Apex Global Financial Controllership',
     role: 'VP Corporate Controller & Risk Shield',
     badge: 'Executive Approver',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    avatar: null,
     gstin: 'GSTIN-07AABCT3421K1ZZ',
     plan: 'Executive Tier Alpha',
     verifiedAudits: 1190,
@@ -79,8 +79,8 @@ export function AuthProvider({ children }) {
     } catch (e) {
       console.error('Failed to restore auth session:', e);
     }
-    // Default to Siddharth enterprise auditor so user has rich account data immediately
-    return PRESET_ACCOUNTS[0];
+    // Start as null — user must sign in
+    return null;
   });
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export function AuthProvider({ children }) {
   const loginWithGoogle = (isSignUp = false) => {
     const googleUser = {
       ...PRESET_ACCOUNTS[1],
-      name: isSignUp ? 'Google Auditor (New User)' : 'Google Auditor',
+      name: isSignUp ? 'Google User' : 'Google Auditor',
       email: 'auditor.google@discrepiq.io',
       provider: 'google',
       signedInAt: new Date().toISOString()
@@ -129,7 +129,7 @@ export function AuthProvider({ children }) {
   const loginWithGitHub = (isSignUp = false) => {
     const githubUser = {
       ...PRESET_ACCOUNTS[2],
-      name: isSignUp ? 'GitHub Auditor (New User)' : 'GitHub Engineer Auditor',
+      name: isSignUp ? 'GitHub User' : 'GitHub Auditor',
       email: 'auditor.github@discrepiq.io',
       provider: 'github',
       signedInAt: new Date().toISOString()

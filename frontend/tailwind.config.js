@@ -8,38 +8,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        maroon: {
-          50: '#fdf2f4',
-          100: '#fce7eb',
-          200: '#f9d0d8',
-          300: '#f3a8b7',
-          400: '#e8728d',
-          500: '#d74468',
-          600: '#b82348',
-          700: '#9b1b3b',
-          800: '#800020', // Classic Royal Maroon
-          900: '#670d24', // Deep Wine Maroon
-          950: '#3d0312', // Midnight Black-Maroon
-        },
+        // Monochrome Brand Palette
         brand: {
-          50: '#fdf2f4',
-          100: '#fce7eb',
-          200: '#f9d0d8',
-          300: '#f3a8b7',
-          400: '#e8728d',
-          500: '#d74468',
-          600: '#b82348',
-          700: '#9b1b3b',
-          800: '#800020',
-          900: '#670d24',
-          950: '#3d0312',
+          50: '#fafafa',
+          100: '#f4f4f5',
+          200: '#e4e4e7',
+          300: '#d4d4d8',
+          400: '#a1a1aa',
+          500: '#71717a',
+          600: '#52525b',
+          700: '#3f3f46',
+          800: '#27272a',
+          900: '#18181b',
+          950: '#09090b',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        mono: ['JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', 'monospace']
       }
     },
   },
   plugins: [],
 }
-

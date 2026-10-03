@@ -1,46 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
-  Layers, 
   LayoutDashboard, 
   FileCheck2, 
-  Bot, 
+  MessageSquare, 
   BarChart3, 
   Settings, 
   ShieldCheck, 
-  Flame, 
-  Sparkles, 
-  ChevronRight, 
   PanelLeftClose, 
-  Sun, 
-  Moon, 
   Search, 
   LogOut, 
-  User, 
-  Activity, 
-  Zap, 
-  CheckCircle2, 
   FileText,
-  Globe,
   Mail,
-  Phone,
-  HelpCircle,
-  MapPin,
-  Send
+  Home,
+  ChevronRight,
+  History,
+  CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { useDocuments } from '../context/DocumentContext';
 
 export default function LeftSlidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, presetAccounts, switchAccount, logout } = useAuth();
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { user, logout } = useAuth();
   const { stats } = useDocuments();
 
   const [searchFilter, setSearchFilter] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactSubject, setContactSubject] = useState('');
   const [contactMsg, setContactMsg] = useState('');
@@ -60,133 +46,111 @@ export default function LeftSlidebar({ isOpen, setIsOpen }) {
       setShowContactModal(false);
       setContactSubject('');
       setContactMsg('');
-    }, 2000);
+    }, 1500);
   };
 
   const menuSections = [
     {
-      title: 'WORKSPACE VIEWS',
+      title: 'Navigation',
       items: [
-        { name: 'Executive Overview', path: '/', icon: Activity },
-        { name: 'Ingestion Workspace', path: '/dashboard', icon: LayoutDashboard, badge: stats?.totalProcessed || '4' },
-        { name: 'Line-Item Inspector', path: '/inspect/test-3-contractor', icon: FileCheck2 },
-        { name: 'Audit Ledger & History', path: '/history', icon: FileText },
-        { name: 'Audit Analytics & KPIs', path: '/analytics', icon: BarChart3 },
+        { name: 'Home', path: '/', icon: Home },
+        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, badge: stats?.totalProcessed || null },
+        { name: 'Inspector', path: '/inspect/test-3-contractor', icon: FileCheck2 },
+        { name: 'History', path: '/history', icon: History },
+        { name: 'Analytics', path: '/analytics', icon: BarChart3 },
       ]
     },
     {
-      title: 'INTELLIGENCE SUITE',
+      title: 'Tools',
       items: [
-        { name: 'DiscrepBot AI Assistant', path: '/support', icon: Bot, badge: 'Live' },
-        { name: 'PolicyGuard Compliance', path: '/account', icon: ShieldCheck },
-      ]
-    },
-    {
-      title: 'SYSTEM & SETTINGS',
-      items: [
-        { name: 'Auditor Credentials & Rules', path: '/account', icon: Settings },
+        { name: 'AI Assistant', path: '/support', icon: MessageSquare },
+        { name: 'Policy Rules', path: '/account', icon: ShieldCheck },
+        { name: 'Account Settings', path: '/account', icon: Settings },
       ]
     }
   ];
 
   return (
     <>
-      {/* Backdrop when Sidebar is Open */}
+      {/* Overlay */}
       {isOpen && (
-        <div 
+        <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity"
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
         />
       )}
 
-      {/* Maroon & White macOS Frosted Glass Sidebar */}
-      <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-white dark:bg-zinc-950 border-r border-maroon-100 dark:border-zinc-800 text-slate-800 dark:text-zinc-200 flex flex-col justify-between transition-all duration-300 ease-in-out select-none shadow-2xl ${
+      {/* Sidebar panel */}
+      <aside
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-white border-r border-zinc-200 flex flex-col shadow-2xl transition-transform duration-200 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        
-        {/* Top Header of Sidebar with Traffic Lights */}
-        <div className="p-4 border-b border-maroon-100/80 dark:border-zinc-800/80 space-y-3 bg-maroon-50/40 dark:bg-zinc-900/40">
-          
+        {/* Header */}
+        <div className="p-4 border-b border-zinc-100 space-y-3">
           <div className="flex items-center justify-between">
-            {/* Traffic Light Accents & Brand */}
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-md bg-zinc-900 text-white flex items-center justify-center font-black text-[10px]">
+                IQ
               </div>
-              <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-1.5 ml-2 group">
-                <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white font-sans">
-                  Discrep<span className="text-maroon-800 dark:text-rose-400">IQ</span>
-                </span>
-              </Link>
-            </div>
-
-            {/* Close Toggle */}
+              <span className="font-bold text-sm text-zinc-900 tracking-tight">DiscrepIQ</span>
+            </Link>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-maroon-900 dark:hover:text-white hover:bg-maroon-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-              title="Close Sidebar"
+              className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               <PanelLeftClose className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Spotlight Search Filter */}
+          {/* Search */}
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-maroon-700/60 dark:text-zinc-500" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2 text-zinc-400" />
             <input
               type="text"
-              placeholder="Search views..."
+              placeholder="Search pages..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full bg-white dark:bg-zinc-900 border border-maroon-200/70 dark:border-zinc-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 outline-none focus:border-maroon-700 transition-colors"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-zinc-400 transition-colors"
             />
           </div>
-
         </div>
 
-        {/* Navigation Sections */}
-        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        {/* Nav links */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5">
           {menuSections.map((sec, sIdx) => {
-            const visibleItems = sec.items.filter(it => 
+            const visible = sec.items.filter(it =>
               !searchFilter.trim() || it.name.toLowerCase().includes(searchFilter.toLowerCase())
             );
-
-            if (visibleItems.length === 0) return null;
+            if (visible.length === 0) return null;
 
             return (
-              <div key={sIdx} className="space-y-1">
-                <div className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-maroon-800/80 dark:text-zinc-500 font-bold">
+              <div key={sIdx} className="space-y-0.5">
+                <div className="px-2 text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1.5">
                   {sec.title}
                 </div>
-                {visibleItems.map((item) => {
+                {visible.map((item) => {
                   const active = isActive(item.path);
                   const Icon = item.icon;
                   return (
                     <Link
-                      key={item.path}
+                      key={item.path + item.name}
                       to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all group ${
+                      className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
                         active
-                          ? 'bg-maroon-800 text-white shadow-md shadow-maroon-900/30 font-bold'
-                          : 'text-slate-700 dark:text-zinc-300 hover:text-maroon-900 dark:hover:text-white hover:bg-maroon-50 dark:hover:bg-zinc-900'
+                          ? 'bg-zinc-900 text-white'
+                          : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-maroon-700 dark:text-zinc-400 group-hover:text-maroon-800'}`} />
-                        <span className="truncate">{item.name}</span>
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{item.name}</span>
                       </div>
-
                       {item.badge && (
-                        <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold uppercase ${
-                          active
-                            ? 'bg-white/20 text-white'
-                            : 'bg-maroon-100 dark:bg-zinc-800 text-maroon-800 dark:text-zinc-300'
+                        <span className={`px-1.5 rounded text-[10px] font-mono ${
+                          active ? 'bg-white/20 text-white' : 'bg-zinc-100 text-zinc-500'
                         }`}>
                           {item.badge}
                         </span>
@@ -198,193 +162,131 @@ export default function LeftSlidebar({ isOpen, setIsOpen }) {
             );
           })}
 
-          {/* Quick Utilities in Sidebar (Language & Contact Us) */}
-          <div className="pt-2 border-t border-maroon-100 dark:border-zinc-800/80 space-y-2">
-            <div className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-maroon-800/80 dark:text-zinc-500 font-bold">
-              PREFERENCES &amp; HELP
+          {/* Contact */}
+          <div className="pt-2 border-t border-zinc-100">
+            <div className="px-2 text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1.5">
+              Support
             </div>
-
-            {/* Language Selector */}
-            <div className="px-2.5 py-1.5 flex items-center justify-between text-xs rounded-xl bg-maroon-50/50 dark:bg-zinc-900 border border-maroon-100 dark:border-zinc-800">
-              <span className="flex items-center gap-2 text-slate-700 dark:text-zinc-300">
-                <Globe className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400" />
-                <span>Language</span>
-              </span>
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-800 dark:text-zinc-200 text-[11px] rounded-lg px-2 py-1 outline-none font-mono cursor-pointer"
-              >
-                <option value="English">English</option>
-                <option value="Hindi">हिन्दी</option>
-                <option value="German">Deutsch</option>
-                <option value="French">Français</option>
-                <option value="Japanese">日本語</option>
-                <option value="Spanish">Español</option>
-              </select>
-            </div>
-
-            {/* Contact Us Modal Trigger */}
             <button
               type="button"
               onClick={() => setShowContactModal(true)}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:text-maroon-900 dark:hover:text-white hover:bg-maroon-50 dark:hover:bg-zinc-900 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-maroon-800 dark:text-rose-400" />
-                <span>Contact DiscrepIQ Team</span>
+              <div className="flex items-center gap-2.5">
+                <Mail className="w-3.5 h-3.5" />
+                <span>Contact Support</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronRight className="w-3 h-3 text-zinc-400" />
             </button>
           </div>
         </div>
 
-        {/* Bottom Panel: Dark/Light Mode Switcher & Active Account Card */}
-        <div className="p-3 border-t border-maroon-100 dark:border-zinc-800 bg-maroon-50/40 dark:bg-zinc-900/60 space-y-2.5">
-          
-          {/* Segmented Light/Dark Switch */}
-          <div className="flex items-center justify-between p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 text-xs">
-            <button
-              type="button"
-              onClick={() => { if (isDark) toggleTheme(); }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                !isDark 
-                  ? 'bg-white text-maroon-900 shadow-xs font-bold' 
-                  : 'text-slate-500 dark:text-zinc-400 hover:text-white'
-              }`}
-            >
-              <Sun className="w-3.5 h-3.5 text-amber-500" />
-              <span>White Mode</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => { if (!isDark) toggleTheme(); }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                isDark 
-                  ? 'bg-black text-rose-300 shadow-xs font-bold' 
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Moon className="w-3.5 h-3.5 text-rose-400" />
-              <span>Dark Mode</span>
-            </button>
-          </div>
-
-          {/* User Account Capsule */}
-          <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-maroon-200/70 dark:border-zinc-700/60 flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <div className="w-7 h-7 rounded-lg bg-maroon-800 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
-                {user?.name ? user.name.charAt(0) : 'A'}
+        {/* Footer: user sign-out */}
+        <div className="p-3 border-t border-zinc-100">
+          {user ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-xs font-medium text-zinc-700 truncate">{user.name.split(' ')[0]}</span>
               </div>
-              <div className="truncate">
-                <div className="font-bold text-xs text-slate-900 dark:text-white truncate">{user?.name || 'Auditor'}</div>
-                <div className="text-[10px] text-maroon-800 dark:text-rose-400 font-mono truncate">{user?.role || 'Lead AP Auditor'}</div>
-              </div>
+              <button
+                type="button"
+                id="sidebar-sign-out-btn"
+                onClick={() => { logout(); setIsOpen(false); navigate('/login'); }}
+                className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-red-600 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
             </div>
-
-            <Link
-              to="/account"
-              onClick={() => setIsOpen(false)}
-              className="p-1 rounded text-slate-400 hover:text-maroon-800 dark:hover:text-rose-400 transition-colors"
-              title="Manage Account"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex-1 text-center py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setIsOpen(false)}
+                className="flex-1 text-center py-1.5 rounded-lg bg-zinc-900 text-white text-xs font-semibold hover:bg-zinc-700 transition-colors"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
-
       </aside>
 
-      {/* Interactive Contact Us Modal */}
+      {/* Contact modal */}
       {showContactModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-fadeIn">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-maroon-800 text-white flex items-center justify-center">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">Contact DiscrepIQ Enterprise</h3>
-              </div>
-              <button 
-                type="button" 
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 animate-fadeIn">
+          <div className="w-full max-w-sm rounded-xl bg-white border border-zinc-200 p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+              <h3 className="font-bold text-sm text-zinc-900">Contact Support</h3>
+              <button
+                type="button"
                 onClick={() => setShowContactModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
+                className="text-zinc-400 hover:text-zinc-900 text-xs cursor-pointer"
               >
                 ✕
               </button>
             </div>
-
-            <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-maroon-50 dark:bg-zinc-950 border border-maroon-100 dark:border-zinc-800">
-                <MapPin className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400 mb-1" />
-                <div className="font-bold text-slate-900 dark:text-white">Bangalore AI Lab</div>
-                <div className="text-[10px] text-slate-500 dark:text-zinc-400">100 Feet Rd, Indiranagar, Bengaluru, KA 560038</div>
+            {contactSubmitted ? (
+              <div className="py-4 text-center space-y-1">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                <p className="text-xs font-semibold text-emerald-700">Message sent!</p>
+                <p className="text-[11px] text-zinc-500">We'll get back to you soon.</p>
               </div>
-              <div className="p-3 rounded-xl bg-maroon-50 dark:bg-zinc-950 border border-maroon-100 dark:border-zinc-800">
-                <Phone className="w-3.5 h-3.5 text-maroon-800 dark:text-rose-400 mb-1" />
-                <div className="font-bold text-slate-900 dark:text-white">Enterprise AP Hotline</div>
-                <div className="text-[10px] text-slate-500 dark:text-zinc-400">+91 (80) 4129-8800 (Mon-Sat, 9AM-8PM IST)</div>
-              </div>
-            </div>
-
-            <form onSubmit={handleSendContact} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1 font-bold">Subject</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Audit Inquiry or Custom GST Rules"
-                  value={contactSubject}
-                  onChange={(e) => setContactSubject(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-maroon-800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-600 dark:text-zinc-400 font-mono text-[11px] mb-1 font-bold">Message</label>
-                <textarea
-                  rows={3}
-                  required
-                  placeholder="Describe your question or reconciliation issue..."
-                  value={contactMsg}
-                  onChange={(e) => setContactMsg(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none focus:border-maroon-800 resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowContactModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-semibold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={contactSubmitted}
-                  className="px-5 py-2 rounded-xl bg-maroon-800 hover:bg-maroon-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-maroon-900/30 cursor-pointer"
-                >
-                  {contactSubmitted ? (
-                    <>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
-                      <span>Message Dispatched!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-3.5 h-3.5" />
-                      <span>Submit Message</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
+            ) : (
+              <form onSubmit={handleSendContact} className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-700 mb-1">Subject</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="How can we help?"
+                    value={contactSubject}
+                    onChange={(e) => setContactSubject(e.target.value)}
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 outline-none focus:border-zinc-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-700 mb-1">Message</label>
+                  <textarea
+                    required
+                    rows="3"
+                    placeholder="Describe your issue..."
+                    value={contactMsg}
+                    onChange={(e) => setContactMsg(e.target.value)}
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 outline-none resize-none focus:border-zinc-500"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowContactModal(false)}
+                    className="px-3 py-1.5 text-xs rounded-lg border border-zinc-200 text-zinc-600 hover:bg-zinc-50 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-1.5 text-xs rounded-lg bg-zinc-900 text-white font-semibold cursor-pointer hover:bg-zinc-700 flex items-center gap-1.5"
+                  >
+                    <Send className="w-3 h-3" />
+                    Send
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
     </>
   );
 }
-
